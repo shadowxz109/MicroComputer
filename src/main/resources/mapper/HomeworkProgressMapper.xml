@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shadowxz.dao.HomeworkProgressMapper" >
+  <resultMap id="BaseResultMap" type="com.shadowxz.domain.HomeworkProgress" >
+    <constructor >
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="homework_id" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="student_id" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="question_num" jdbcType="CHAR" javaType="java.lang.String" />
+      <arg column="answer" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="status" jdbcType="CHAR" javaType="java.lang.String" />
+      <arg column="score" jdbcType="REAL" javaType="java.lang.Float" />
+      <arg column="finish_date" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="type" jdbcType="CHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, homework_id, student_id, question_num, answer, status, score, finish_date, type
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from homework_progress
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from homework_progress
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.shadowxz.domain.HomeworkProgress" >
+    insert into homework_progress (id, homework_id, student_id, 
+      question_num, answer, status, 
+      score, finish_date, type
+      )
+    values (#{id,jdbcType=INTEGER}, #{homeworkId,jdbcType=VARCHAR}, #{studentId,jdbcType=VARCHAR}, 
+      #{questionNum,jdbcType=CHAR}, #{answer,jdbcType=VARCHAR}, #{status,jdbcType=CHAR}, 
+      #{score,jdbcType=REAL}, #{finishDate,jdbcType=TIMESTAMP}, #{type,jdbcType=CHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.shadowxz.domain.HomeworkProgress" >
+    insert into homework_progress
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="homeworkId != null" >
+        homework_id,
+      </if>
+      <if test="studentId != null" >
+        student_id,
+      </if>
+      <if test="questionNum != null" >
+        question_num,
+      </if>
+      <if test="answer != null" >
+        answer,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="score != null" >
+        score,
+      </if>
+      <if test="finishDate != null" >
+        finish_date,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="homeworkId != null" >
+        #{homeworkId,jdbcType=VARCHAR},
+      </if>
+      <if test="studentId != null" >
+        #{studentId,jdbcType=VARCHAR},
+      </if>
+      <if test="questionNum != null" >
+        #{questionNum,jdbcType=CHAR},
+      </if>
+      <if test="answer != null" >
+        #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=CHAR},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=REAL},
+      </if>
+      <if test="finishDate != null" >
+        #{finishDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.shadowxz.domain.HomeworkProgress" >
+    update homework_progress
+    <set >
+      <if test="homeworkId != null" >
+        homework_id = #{homeworkId,jdbcType=VARCHAR},
+      </if>
+      <if test="studentId != null" >
+        student_id = #{studentId,jdbcType=VARCHAR},
+      </if>
+      <if test="questionNum != null" >
+        question_num = #{questionNum,jdbcType=CHAR},
+      </if>
+      <if test="answer != null" >
+        answer = #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=CHAR},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=REAL},
+      </if>
+      <if test="finishDate != null" >
+        finish_date = #{finishDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.shadowxz.domain.HomeworkProgress" >
+    update homework_progress
+    set homework_id = #{homeworkId,jdbcType=VARCHAR},
+      student_id = #{studentId,jdbcType=VARCHAR},
+      question_num = #{questionNum,jdbcType=CHAR},
+      answer = #{answer,jdbcType=VARCHAR},
+      status = #{status,jdbcType=CHAR},
+      score = #{score,jdbcType=REAL},
+      finish_date = #{finishDate,jdbcType=TIMESTAMP},
+      type = #{type,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

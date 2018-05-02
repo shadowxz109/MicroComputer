@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shadowxz.dao.CoursewareMapper" >
+  <resultMap id="BaseResultMap" type="com.shadowxz.domain.Courseware" >
+    <constructor >
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="chapter_id" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="upload_date" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="download_times" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="file" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="teacher_id" jdbcType="VARCHAR" javaType="java.lang.String"/>
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, chapter_id, upload_date, download_times, file, teacher_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from courseware
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectByChapterId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+   id , name, upload_date, download_times
+    from courseware
+    where chapter_id = #{chapter_id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from courseware
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.shadowxz.domain.Courseware" >
+    insert into courseware (id, name, chapter_id, 
+      upload_date, download_times, file
+      )
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{chapterId,jdbcType=VARCHAR}, 
+      #{uploadDate,jdbcType=TIMESTAMP}, #{downloadTimes,jdbcType=INTEGER}, #{file,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.shadowxz.domain.Courseware" >
+    insert into courseware
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="chapterId != null" >
+        chapter_id,
+      </if>
+      <if test="uploadDate != null" >
+        upload_date,
+      </if>
+      <if test="downloadTimes != null" >
+        download_times,
+      </if>
+      <if test="file != null" >
+        file,
+      </if>
+      <if test="teacher_id != null" >
+        teacher_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="chapterId != null" >
+        #{chapterId,jdbcType=VARCHAR},
+      </if>
+      <if test="uploadDate != null" >
+        #{uploadDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="downloadTimes != null" >
+        #{downloadTimes,jdbcType=INTEGER},
+      </if>
+      <if test="file != null" >
+        #{file,jdbcType=VARCHAR},
+      </if>
+      <if test="teacher_id != null" >
+        #{teacher_id,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.shadowxz.domain.Courseware" >
+    update courseware
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="chapterId != null" >
+        chapter_id = #{chapterId,jdbcType=VARCHAR},
+      </if>
+      <if test="uploadDate != null" >
+        upload_date = #{uploadDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="downloadTimes != null" >
+        download_times = #{downloadTimes,jdbcType=INTEGER},
+      </if>
+      <if test="file != null" >
+        file = #{file,jdbcType=VARCHAR},
+      </if>
+       <if test="teacher_id != null" >
+        #{teacher_id,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.shadowxz.domain.Courseware" >
+    update courseware
+    set name = #{name,jdbcType=VARCHAR},
+      chapter_id = #{chapterId,jdbcType=VARCHAR},
+      upload_date = #{uploadDate,jdbcType=TIMESTAMP},
+      download_times = #{downloadTimes,jdbcType=INTEGER},
+      file = #{file,jdbcType=VARCHAR},
+      teacher_id = #{teacher_id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="addDownloadTimes" parameterType="java.lang.Integer">
+    update courseware
+    set download_times = download_times + 1;
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

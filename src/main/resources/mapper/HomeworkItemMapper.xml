@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shadowxz.dao.HomeworkItemMapper">
+  <resultMap id="BaseResultMap" type="com.shadowxz.domain.HomeworkItem">
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="question_num" javaType="java.lang.String" jdbcType="CHAR" />
+      <arg column="detail" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="type" javaType="java.lang.String" jdbcType="CHAR" />
+      <arg column="answer" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="remark" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="score" javaType="java.lang.Float" jdbcType="REAL" />
+      <arg column="homework_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, question_num, detail, type, answer, remark, score, homework_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from homework_item
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from homework_item
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.shadowxz.domain.HomeworkItem">
+    insert into homework_item (id, question_num, detail, 
+      type, answer, remark, 
+      score, homework_id)
+    values (#{id,jdbcType=INTEGER}, #{questionNum,jdbcType=CHAR}, #{detail,jdbcType=VARCHAR}, 
+      #{type,jdbcType=CHAR}, #{answer,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{score,jdbcType=REAL}, #{homeworkId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.shadowxz.domain.HomeworkItem">
+    insert into homework_item
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="questionNum != null">
+        question_num,
+      </if>
+      <if test="detail != null">
+        detail,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="answer != null">
+        answer,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="score != null">
+        score,
+      </if>
+      <if test="homeworkId != null">
+        homework_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="questionNum != null">
+        #{questionNum,jdbcType=CHAR},
+      </if>
+      <if test="detail != null">
+        #{detail,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=CHAR},
+      </if>
+      <if test="answer != null">
+        #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null">
+        #{score,jdbcType=REAL},
+      </if>
+      <if test="homeworkId != null">
+        #{homeworkId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.shadowxz.domain.HomeworkItem">
+    update homework_item
+    <set>
+      <if test="questionNum != null">
+        question_num = #{questionNum,jdbcType=CHAR},
+      </if>
+      <if test="detail != null">
+        detail = #{detail,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=CHAR},
+      </if>
+      <if test="answer != null">
+        answer = #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null">
+        score = #{score,jdbcType=REAL},
+      </if>
+      <if test="homeworkId != null">
+        homework_id = #{homeworkId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.shadowxz.domain.HomeworkItem">
+    update homework_item
+    set question_num = #{questionNum,jdbcType=CHAR},
+      detail = #{detail,jdbcType=VARCHAR},
+      type = #{type,jdbcType=CHAR},
+      answer = #{answer,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      score = #{score,jdbcType=REAL},
+      homework_id = #{homeworkId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

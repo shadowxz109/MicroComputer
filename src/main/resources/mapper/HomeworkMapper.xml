@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shadowxz.dao.HomeworkMapper">
+  <resultMap id="BaseResultMap" type="com.shadowxz.domain.Homework">
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="chapter_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="pulish_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="deadline" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="teacher_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, chapter_id, pulish_time, deadline, teacher_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from homework
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from homework
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.shadowxz.domain.Homework">
+    insert into homework (id, chapter_id, pulish_time, 
+      deadline, teacher_id)
+    values (#{id,jdbcType=INTEGER}, #{chapterId,jdbcType=VARCHAR}, #{pulishTime,jdbcType=TIMESTAMP}, 
+      #{deadline,jdbcType=TIMESTAMP}, #{teacherId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.shadowxz.domain.Homework">
+    insert into homework
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="chapterId != null">
+        chapter_id,
+      </if>
+      <if test="pulishTime != null">
+        pulish_time,
+      </if>
+      <if test="deadline != null">
+        deadline,
+      </if>
+      <if test="teacherId != null">
+        teacher_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="chapterId != null">
+        #{chapterId,jdbcType=VARCHAR},
+      </if>
+      <if test="pulishTime != null">
+        #{pulishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deadline != null">
+        #{deadline,jdbcType=TIMESTAMP},
+      </if>
+      <if test="teacherId != null">
+        #{teacherId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.shadowxz.domain.Homework">
+    update homework
+    <set>
+      <if test="chapterId != null">
+        chapter_id = #{chapterId,jdbcType=VARCHAR},
+      </if>
+      <if test="pulishTime != null">
+        pulish_time = #{pulishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deadline != null">
+        deadline = #{deadline,jdbcType=TIMESTAMP},
+      </if>
+      <if test="teacherId != null">
+        teacher_id = #{teacherId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.shadowxz.domain.Homework">
+    update homework
+    set chapter_id = #{chapterId,jdbcType=VARCHAR},
+      pulish_time = #{pulishTime,jdbcType=TIMESTAMP},
+      deadline = #{deadline,jdbcType=TIMESTAMP},
+      teacher_id = #{teacherId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

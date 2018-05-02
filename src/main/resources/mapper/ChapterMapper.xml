@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shadowxz.dao.ChapterMapper" >
+  <resultMap id="BaseResultMap" type="com.shadowxz.domain.Chapter" >
+    <constructor >
+      <idArg column="chapter_id" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="chapter_name" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="father_id" jdbcType="VARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    chapter_id, chapter_name, father_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from chapter
+    where chapter_id = #{chapterId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAllChapters" resultMap="BaseResultMap">
+     select
+    <include refid="Base_Column_List" />
+    from chapter
+  </select>
+  <select id="selectChildByFatherId" resultMap="BaseResultMap" parameterType="java.lang.String">
+     select
+    <include refid="Base_Column_List" />
+    from chapter
+    where father_id = #{fatherId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from chapter
+    where chapter_id = #{chapterId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.shadowxz.domain.Chapter" >
+    insert into chapter (chapter_id, chapter_name, father_id
+      )
+    values (#{chapterId,jdbcType=VARCHAR}, #{chapterName,jdbcType=VARCHAR}, #{fatherId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.shadowxz.domain.Chapter" >
+    insert into chapter
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="chapterId != null" >
+        chapter_id,
+      </if>
+      <if test="chapterName != null" >
+        chapter_name,
+      </if>
+      <if test="fatherId != null" >
+        father_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="chapterId != null" >
+        #{chapterId,jdbcType=VARCHAR},
+      </if>
+      <if test="chapterName != null" >
+        #{chapterName,jdbcType=VARCHAR},
+      </if>
+      <if test="fatherId != null" >
+        #{fatherId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.shadowxz.domain.Chapter" >
+    update chapter
+    <set >
+      <if test="chapterName != null" >
+        chapter_name = #{chapterName,jdbcType=VARCHAR},
+      </if>
+      <if test="fatherId != null" >
+        father_id = #{fatherId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where chapter_id = #{chapterId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.shadowxz.domain.Chapter" >
+    update chapter
+    set chapter_name = #{chapterName,jdbcType=VARCHAR},
+      father_id = #{fatherId,jdbcType=VARCHAR}
+    where chapter_id = #{chapterId,jdbcType=VARCHAR}
+  </update>
+</mapper>
