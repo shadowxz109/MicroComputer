@@ -1,8 +1,11 @@
 package com.shadowxz.dao;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Component;
 
 import com.shadowxz.domain.Homework;
+
+@Component
 @Mapper
 public interface HomeworkMapper {
     int deleteByPrimaryKey(Integer id);
@@ -16,4 +19,6 @@ public interface HomeworkMapper {
     int updateByPrimaryKeySelective(Homework record);
 
     int updateByPrimaryKey(Homework record);
+
+    Homework selectHomeDetailById(Integer id);
 }

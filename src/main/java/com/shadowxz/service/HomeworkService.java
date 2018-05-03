@@ -1,5 +1,7 @@
 package com.shadowxz.service;
 
+import com.shadowxz.domain.Homework;
+
 /**
  * @Description:
  * @Author: xiangzhong23737
@@ -7,4 +9,8 @@ package com.shadowxz.service;
  * @Modified by:
  */
 public interface HomeworkService {
+
+    Homework findDetailByHomeworkId(Integer id);
+
+    void addHomework(Homework homework);
 }

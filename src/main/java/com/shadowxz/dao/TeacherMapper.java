@@ -1,9 +1,11 @@
 package com.shadowxz.dao;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Component;
 
 import com.shadowxz.domain.Teacher;
 
+@Component
 @Mapper
 public interface TeacherMapper {
     int deleteByPrimaryKey(String teacherId);

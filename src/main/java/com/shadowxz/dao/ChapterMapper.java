@@ -3,9 +3,11 @@ package com.shadowxz.dao;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Component;
 
 import com.shadowxz.domain.Chapter;
 
+@Component
 @Mapper
 public interface ChapterMapper {
 

@@ -1,7 +1,12 @@
 package com.shadowxz.dao;
 
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Component;
+
 import com.shadowxz.domain.HomeworkItem;
 
+@Component
+@Mapper
 public interface HomeworkItemMapper {
     int deleteByPrimaryKey(Integer id);
 

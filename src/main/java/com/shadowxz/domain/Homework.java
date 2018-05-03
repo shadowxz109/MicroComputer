@@ -1,6 +1,9 @@
 package com.shadowxz.domain;
 
 import java.util.Date;
+import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -9,13 +12,15 @@ public class Homework {
 
     private String chapterId;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date pulishTime;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date deadline;
 
     private String teacherId;
+
+    private List<HomeworkItem> items;
 
     public Homework(Integer id, String chapterId, Date pulishTime, Date deadline, String teacherId) {
         this.id = id;
@@ -45,6 +50,7 @@ public class Homework {
         this.chapterId = chapterId == null ? null : chapterId.trim();
     }
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     public Date getPulishTime() {
         return pulishTime;
     }
@@ -53,6 +59,7 @@ public class Homework {
         this.pulishTime = pulishTime;
     }
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     public Date getDeadline() {
         return deadline;
     }
@@ -67,5 +74,13 @@ public class Homework {
 
     public void setTeacherId(String teacherId) {
         this.teacherId = teacherId == null ? null : teacherId.trim();
+    }
+
+    public List<HomeworkItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<HomeworkItem> items) {
+        this.items = items;
     }
 }
