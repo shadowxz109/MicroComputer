@@ -32,7 +32,11 @@
     delete from homework_item
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.shadowxz.domain.HomeworkItem">
+  <delete id="deleteByHomeworkId" parameterType="java.lang.Integer">
+    delete from homework_item
+    where homework_id = #{homeworkId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.shadowxz.domain.HomeworkItem">
     insert into homework_item (id, question_num, detail, 
       type, answer, remark, 
       score, homework_id)
@@ -40,7 +44,7 @@
       #{type,jdbcType=CHAR}, #{answer,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
       #{score,jdbcType=REAL}, #{homeworkId,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.shadowxz.domain.HomeworkItem">
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.shadowxz.domain.HomeworkItem">
     insert into homework_item
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

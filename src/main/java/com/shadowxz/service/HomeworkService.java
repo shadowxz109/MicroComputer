@@ -1,5 +1,7 @@
 package com.shadowxz.service;
 
+import java.util.Map;
+
 import com.shadowxz.domain.Homework;
 
 /**
@@ -10,7 +12,15 @@ import com.shadowxz.domain.Homework;
  */
 public interface HomeworkService {
 
+    Homework findScoresByStudentId(String studentId);
+
+    Homework findScoresByIdAndClazz(Map<String,Object> map);
+
     Homework findDetailByHomeworkId(Integer id);
 
     void addHomework(Homework homework);
+
+    void deleteHomeworkById(Integer id);
+
+    void modifyHomework(Homework homework);
 }

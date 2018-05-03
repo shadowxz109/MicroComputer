@@ -4,19 +4,21 @@
   <resultMap id="BaseResultMap" type="com.shadowxz.domain.Teacher" >
     <constructor >
       <idArg column="teacher_id" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="password" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="picture" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="name" jdbcType="VARCHAR" javaType="java.lang.String" />
     </constructor>
   </resultMap>
   <sql id="Base_Column_List" >
-    teacher_id, password, picture, name
+    teacher_id, picture, name
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from teacher
     where teacher_id = #{teacherId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectPasswordByTeacherId" resultType="java.lang.String" parameterType="java.lang.String">
+    select password from teacher where teacher_id = #{teacherId,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from teacher

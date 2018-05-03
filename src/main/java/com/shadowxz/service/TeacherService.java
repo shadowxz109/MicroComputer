@@ -7,4 +7,7 @@ package com.shadowxz.service;
  * @Modified by:
  */
 public interface TeacherService {
+
+    String findPasswordByTeacherId(String teacherId);
+
 }

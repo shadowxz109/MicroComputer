@@ -1,7 +1,6 @@
 package com.shadowxz.service.impl;
 
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,11 +30,7 @@ public class StudentServiceImpl implements StudentService{
     public String findPasswordByStudentId(String studentId) {
         String result = null;
         try {
-            Map<String,Object> passwordMap = studentMapper.selectPasswordByStudentId(studentId);
-            Object passwordObj = passwordMap.get("PASSWORD");
-            if(passwordObj != null){
-                result =  passwordObj.toString();
-            }
+            result = studentMapper.selectPasswordByStudentId(studentId);
         } catch (Exception e) {
             logger.error("根据学号查询密码失败------------------->");
             e.printStackTrace();
@@ -70,13 +65,25 @@ public class StudentServiceImpl implements StudentService{
     }
 
     @Override
-    public List<Student> findStudentByClass(String classId) {
+    public List<Student> findStudentByClass(List<String> clazzList) {
         List<Student> list = null;
         try {
-            list = studentMapper.selectStudentByClassId(classId);
+            list = studentMapper.selectStudentByClazzs(clazzList);
         } catch (Exception e) {
-            logger.error("根据学号查询学生失败------------------->");
+            logger.error("根据班级查询学生失败------------------->");
             e.printStackTrace();
+            throw new RuntimeException();
+        }
+        return list;
+    }
+
+    @Override
+    public List<String> findStudentIdByClass(List<String> clazzList) {
+        List<String> list = null;
+        try {
+            list = studentMapper.selectStudentIdByClazzs(clazzList);
+        } catch (Exception e) {
+            logger.error("根据班级查询学号失败------------------->");
             throw new RuntimeException();
         }
         return list;

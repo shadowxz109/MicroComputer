@@ -1,5 +1,7 @@
 package com.shadowxz.service.impl;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,5 +47,53 @@ public class HomeworkServiceImpl implements HomeworkService{
             e.printStackTrace();
             throw new RuntimeException();
         }
+    }
+
+    @Override
+    public void deleteHomeworkById(Integer id) {
+        try {
+            homeworkMapper.deleteByPrimaryKey(id);
+        } catch (Exception e) {
+            logger.error("删除作业信息失败------------------->");
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+    }
+
+    @Override
+    public void modifyHomework(Homework homework) {
+        try {
+            homeworkMapper.updateByPrimaryKeySelective(homework);
+        } catch (Exception e) {
+            logger.error("修改作业信息失败------------------->");
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+    }
+
+    @Override
+    public Homework findScoresByIdAndClazz(Map<String, Object> map) {
+        Homework homework = null;
+        try {
+            homework = homeworkMapper.selectHwScoresByIdAndClazz(map);
+        } catch (Exception e) {
+            logger.error("根据作业id和班级查询作业成绩失败------------------->");
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+        return homework;
+    }
+
+    @Override
+    public Homework findScoresByStudentId(String studentId) {
+        Homework homework = null;
+        try {
+            homework = homeworkMapper.selectHwScoresByStuId(studentId);
+        } catch (Exception e) {
+            logger.error("根据学号查询作业成绩失败------------------->");
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
+        return homework;
     }
 }

@@ -2,6 +2,7 @@ package com.shadowxz.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +88,9 @@ public class StudentController {
     public @ResponseBody Map<String,Object> getStudentList(@PathVariable("classId") String classId){
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
-            List<Student> list = studentService.findStudentByClass(classId);
+            List<String> clazz = new ArrayList<>(1);
+            clazz.add(classId);
+            List<Student> list = studentService.findStudentByClass(clazz);
             result.put("msg_no", Constant.GET_DATA_SUCC);
             result.put("data", list);
         } catch (Exception e) {

@@ -19,4 +19,7 @@ public interface HomeworkItemMapper {
     int updateByPrimaryKeySelective(HomeworkItem record);
 
     int updateByPrimaryKey(HomeworkItem record);
+
+    int deleteByHomeworkId(Integer homeworkId);
+
 }

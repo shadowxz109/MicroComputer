@@ -20,14 +20,19 @@ public class Homework {
 
     private String teacherId;
 
+    private String description;
+
+    private List<HomeworkScore> scores;
+
     private List<HomeworkItem> items;
 
-    public Homework(Integer id, String chapterId, Date pulishTime, Date deadline, String teacherId) {
+    public Homework(Integer id, String chapterId, Date pulishTime, Date deadline, String teacherId,String description) {
         this.id = id;
         this.chapterId = chapterId;
         this.pulishTime = pulishTime;
         this.deadline = deadline;
         this.teacherId = teacherId;
+        this.description = description;
     }
 
     public Homework() {
@@ -82,5 +87,21 @@ public class Homework {
 
     public void setItems(List<HomeworkItem> items) {
         this.items = items;
+    }
+
+    public List<HomeworkScore> getScores() {
+        return scores;
+    }
+
+    public void setScores(List<HomeworkScore> scores) {
+        this.scores = scores;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

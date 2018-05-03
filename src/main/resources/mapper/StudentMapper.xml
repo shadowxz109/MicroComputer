@@ -25,13 +25,26 @@
     distinct clazz
     from student
   </select>
-  <select id="selectStudentByClassId" resultMap="BaseResultMap">
+  <select id="selectStudentIdByClazzs" resultType="java.lang.String" parameterType="java.util.List">
+    select student_id
+    from student
+    where clazz in
+     <foreach collection="list" item="clazz" index="index"
+              open="(" close=")" separator=",">
+      #{clazz,jdbcType=VARCHAR}
+    </foreach>
+  </select>
+  <select id="selectStudentByClazzs" resultMap="BaseResultMap" parameterType="java.util.List">
     select
     <include refid="Base_Column_List" />
     from student
-    where clazz = #{classId,jdbcType=VARCHAR}
+    where clazz in
+    <foreach collection="list" item="clazz" index="index"
+             open="(" close=")" separator=",">
+      #{clazz,jdbcType=VARCHAR}
+    </foreach>
   </select>
-  <select id="selectPasswordByStudentId" resultType="java.util.Map" parameterType="java.lang.String">
+  <select id="selectPasswordByStudentId" resultType="java.lang.String" parameterType="java.lang.String">
     select password from student where student_id = #{studentId,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >

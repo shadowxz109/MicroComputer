@@ -1,5 +1,7 @@
 package com.shadowxz.dao;
 
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 
@@ -21,4 +23,8 @@ public interface HomeworkMapper {
     int updateByPrimaryKey(Homework record);
 
     Homework selectHomeDetailById(Integer id);
+
+    Homework selectHwScoresByIdAndClazz(Map<String,Object> map);
+
+    Homework selectHwScoresByStuId(String studentId);
 }

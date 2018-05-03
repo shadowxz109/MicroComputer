@@ -1,13 +1,18 @@
 package com.shadowxz.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 
 import com.shadowxz.domain.HomeworkProgress;
 
+
 @Component
 @Mapper
 public interface HomeworkProgressMapper {
+
     int deleteByPrimaryKey(Integer id);
 
     int insert(HomeworkProgress record);
@@ -19,4 +24,6 @@ public interface HomeworkProgressMapper {
     int updateByPrimaryKeySelective(HomeworkProgress record);
 
     int updateByPrimaryKey(HomeworkProgress record);
+
+    List<HomeworkProgress> selectHPByHwIdAndStuId(Map<String,Object> map);
 }

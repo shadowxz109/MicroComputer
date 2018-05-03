@@ -23,6 +23,21 @@
     from homework_progress
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectHPByHwIdAndStuId" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select
+    <include refid="Base_Column_List" />
+    <where>
+      <if test="homeworkId != null">
+        homework_id = #{homeworkId,jdbcType=VARCHAR}
+      </if>
+      <if test="studentId != null">
+        student_id = #{studentId,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from homework_progress
     where id = #{id,jdbcType=INTEGER}

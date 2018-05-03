@@ -15,10 +15,9 @@ public class Student {
 
     private String gender;
 
-    public Student(String studentId, String name, String password, String clazz, String picture, String email, String gender) {
+    public Student(String studentId, String name, String clazz, String picture, String email, String gender) {
         this.studentId = studentId;
         this.name = name;
-        this.password = password;
         this.clazz = clazz;
         this.picture = picture;
         this.email = email;

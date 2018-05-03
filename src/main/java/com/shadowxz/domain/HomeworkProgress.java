@@ -21,6 +21,8 @@ public class HomeworkProgress {
 
     private String type;
 
+    private HomeworkItem item;
+
     public HomeworkProgress(Integer id, String homeworkId, String studentId, String questionNum, String answer, String status, Float score, Date finishDate, String type) {
         this.id = id;
         this.homeworkId = homeworkId;
@@ -107,5 +109,13 @@ public class HomeworkProgress {
 
     public void setType(String type) {
         this.type = type == null ? null : type.trim();
+    }
+
+    public HomeworkItem getItem() {
+        return item;
+    }
+
+    public void setItem(HomeworkItem item) {
+        this.item = item;
     }
 }

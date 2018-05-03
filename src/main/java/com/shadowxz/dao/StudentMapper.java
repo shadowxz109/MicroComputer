@@ -1,7 +1,6 @@
 package com.shadowxz.dao;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
@@ -23,9 +22,11 @@ public interface StudentMapper {
 
     int updateByPrimaryKey(Student record);
 
-    Map<String,Object> selectPasswordByStudentId(String studentId);
+    String selectPasswordByStudentId(String studentId);
 
-    List<Student> selectStudentByClassId(String classId);
+    List<Student> selectStudentByClazzs(List<String> clazzList);
+
+    List<String> selectStudentIdByClazzs(List<String> clazzList);
 
     List<String> selectAllClass();
 

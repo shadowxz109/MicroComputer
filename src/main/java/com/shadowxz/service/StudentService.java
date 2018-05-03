@@ -18,7 +18,9 @@ public interface StudentService {
 
     void modifyStudentInfo(Student student);
 
-    List<Student> findStudentByClass(String classId);
+    List<Student> findStudentByClass(List<String> clazzList);
+
+    List<String> findStudentIdByClass(List<String> clazzList);
 
     void addStudent(Student student);
 
