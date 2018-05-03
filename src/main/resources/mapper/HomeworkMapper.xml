@@ -10,6 +10,22 @@
       <arg column="teacher_id" javaType="java.lang.String" jdbcType="VARCHAR" />
     </constructor>
   </resultMap>
+  <resultMap id="DetailResultMap" type="com.shadowxz.domain.Homework">
+    <result property="id" column="id" />
+    <result property="chapterId" column="chapter_id" />
+    <result property="pulishTime" column="pulish_time" />
+    <result property="deadline" column="deadline" />
+    <result property="teacherId" column="teacher_id"/>
+    <collection property="items" ofType="com.shadowxz.domain.HomeworkItem">
+      <result property="id" column="item_id" />
+      <result property="questionNum" column="question_num"/>
+      <result property="detail" column="detail"/>
+      <result property="type" column="type"/>
+      <result property="answer" column="answer"/>
+      <result property="remark" column="remark"/>
+      <result property="score" column="score"/>
+    </collection>
+  </resultMap>
   <sql id="Base_Column_List">
     id, chapter_id, pulish_time, deadline, teacher_id
   </sql>
@@ -19,17 +35,25 @@
     from homework
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectHomeDetailById" parameterType="java.lang.Integer" resultMap="DetailResultMap">
+    select t1.id as id,t1.chapter_id,t1.pulish_time,t1.deadline,t1.teacher_id,
+            t2.id as item_id,t2.question_num,t2.detail,t2.remark,t2.score,t2.answer,t2.type
+    from homework t1
+    left join homework_item t2
+      on t1.id = t2.homework_id
+    where t1.id = #{id,jdbcType=INTEGER}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from homework
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.shadowxz.domain.Homework">
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.shadowxz.domain.Homework">
     insert into homework (id, chapter_id, pulish_time, 
       deadline, teacher_id)
     values (#{id,jdbcType=INTEGER}, #{chapterId,jdbcType=VARCHAR}, #{pulishTime,jdbcType=TIMESTAMP}, 
       #{deadline,jdbcType=TIMESTAMP}, #{teacherId,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.shadowxz.domain.Homework">
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.shadowxz.domain.Homework">
     insert into homework
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

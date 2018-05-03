@@ -22,6 +22,12 @@
     from homework_item
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectItemsByHomeworkId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from homework_item
+    where homework_id = #{homeworkId,jdbcType=INTEGER}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from homework_item
     where id = #{id,jdbcType=INTEGER}
