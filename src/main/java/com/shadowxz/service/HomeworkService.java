@@ -12,11 +12,15 @@ import com.shadowxz.domain.Homework;
  */
 public interface HomeworkService {
 
-    Homework findScoresByStudentId(String studentId);
-
     Homework findScoresByIdAndClazz(Map<String,Object> map);
 
+    Homework findStuScoreByHwIdAndStuId(Map<String,Object> map);
+
     Homework findDetailByHomeworkId(Integer id);
+
+    Homework findByHomeworkId(Integer id);
+
+    Homework findStuScoreByStutasAndStuId(Map<String,Object> map);
 
     void addHomework(Homework homework);
 

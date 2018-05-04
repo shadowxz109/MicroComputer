@@ -11,6 +11,8 @@ public class HomeworkScore {
 
     private String status;
 
+    private Student student;
+
     public HomeworkScore(Integer id, Integer homeworkId, String studentId, Float scores, String status) {
         this.id = id;
         this.homeworkId = homeworkId;
@@ -68,5 +70,13 @@ public class HomeworkScore {
 
     public void setStatus(String status) {
         this.status = status == null ? null : status.trim();
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 }

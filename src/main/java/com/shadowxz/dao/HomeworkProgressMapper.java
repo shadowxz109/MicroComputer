@@ -12,7 +12,6 @@ import com.shadowxz.domain.HomeworkProgress;
 @Component
 @Mapper
 public interface HomeworkProgressMapper {
-
     int deleteByPrimaryKey(Integer id);
 
     int insert(HomeworkProgress record);

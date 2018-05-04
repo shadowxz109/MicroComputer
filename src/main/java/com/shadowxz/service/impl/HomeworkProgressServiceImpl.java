@@ -1,5 +1,6 @@
 package com.shadowxz.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -8,7 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.shadowxz.dao.HomeworkItemMapper;
+import com.shadowxz.dao.HomeworkMapper;
 import com.shadowxz.dao.HomeworkProgressMapper;
+import com.shadowxz.domain.Homework;
+import com.shadowxz.domain.HomeworkItem;
 import com.shadowxz.domain.HomeworkProgress;
 import com.shadowxz.service.HomeworkProgressService;
 
@@ -27,10 +32,23 @@ public class HomeworkProgressServiceImpl implements HomeworkProgressService {
     @Autowired
     HomeworkProgressMapper homeworkProgressMapper;
 
+    @Autowired
+    HomeworkItemMapper homeworkItemMapper;
+
+    @Autowired
+    HomeworkMapper homeworkMapper;
+
     @Override
     public void addHomeworkProgress(HomeworkProgress homeworkProgress) {
         try {
-            homeworkProgressMapper.insertSelective(homeworkProgress);
+            HomeworkItem homeworkItem = homeworkItemMapper.selectByPrimaryKey(homeworkProgress.getItemId());
+            Homework homework = homeworkMapper.selectByPrimaryKey(homeworkItem.getHomeworkId());
+            if(homework.getDeadline().before(new Date())) {
+                if (homeworkProgress.getType().equals("0") && homeworkItem.getAnswer().equals(homeworkProgress.getAnswer())) {
+                    homeworkProgress.setScore(homeworkItem.getScore());
+                }
+                homeworkProgressMapper.insertSelective(homeworkProgress);
+            }
         } catch (Exception e) {
             logger.error("新增作业进度失败------------------->");
             e.printStackTrace();
@@ -55,11 +73,24 @@ public class HomeworkProgressServiceImpl implements HomeworkProgressService {
         try {
             list = homeworkProgressMapper.selectHPByHwIdAndStuId(map);
         } catch (Exception e) {
-            logger.error("根据作业id和学生id作业进度失败------------------->");
+            logger.error("根据作业id和学生id查询作业进度失败------------------->");
             e.printStackTrace();
             throw new RuntimeException(e);
         }
         return list;
+    }
+
+    @Override
+    public HomeworkProgress findHPById(Integer id) {
+        HomeworkProgress homeworkProgress = null;
+        try {
+            homeworkProgress = homeworkProgressMapper.selectByPrimaryKey(id);
+        } catch (Exception e) {
+            logger.error("根据id查询作业进度失败------------------->");
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return homeworkProgress;
     }
 
     @Override

@@ -32,7 +32,7 @@ public class HomeworkScoreServiceImpl implements HomeworkScoreService {
         } catch (Exception e) {
             logger.error("根据学号查询学生失败------------------->");
             e.printStackTrace();
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 }

@@ -33,6 +33,7 @@ public class ChapterServiceImpl implements ChapterService {
         } catch (Exception e) {
             logger.error("查询章节信息失败------------------->");
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return chapter;
     }
@@ -44,6 +45,7 @@ public class ChapterServiceImpl implements ChapterService {
         } catch (Exception e) {
             logger.error("删除章节信息失败------------------->");
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -54,6 +56,7 @@ public class ChapterServiceImpl implements ChapterService {
         } catch (Exception e) {
             logger.error("新增章节信息失败------------------->");
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -64,6 +67,7 @@ public class ChapterServiceImpl implements ChapterService {
         } catch (Exception e) {
             logger.error("修改章节信息失败------------------->");
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -75,6 +79,7 @@ public class ChapterServiceImpl implements ChapterService {
         } catch (Exception e) {
             logger.error("查询子节点章节信息失败------------------->");
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return list;
     }
@@ -87,6 +92,7 @@ public class ChapterServiceImpl implements ChapterService {
         } catch (Exception e) {
             logger.error("查询所有章节信息失败------------------->");
             e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return list;
     }

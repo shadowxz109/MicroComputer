@@ -23,4 +23,6 @@ public interface HomeworkScoreMapper {
     int updateByPrimaryKey(HomeworkScore record);
 
     int insertHomeworkScores(List<HomeworkScore> scores);
+
+    int updateOverdue();
 }

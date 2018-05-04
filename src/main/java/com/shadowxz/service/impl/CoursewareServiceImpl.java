@@ -32,7 +32,7 @@ public class CoursewareServiceImpl implements CoursewareService{
         } catch (Exception e) {
             logger.error("新增课件信息失败------------------->");
             e.printStackTrace();
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 
@@ -44,7 +44,7 @@ public class CoursewareServiceImpl implements CoursewareService{
         } catch (Exception e) {
             logger.error("更新课件下载次数失败------------------->");
             e.printStackTrace();
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 
@@ -57,7 +57,7 @@ public class CoursewareServiceImpl implements CoursewareService{
         } catch (Exception e) {
             logger.error("查询课件下载次数失败------------------->");
             e.printStackTrace();
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
         return courseware;
     }
@@ -70,7 +70,7 @@ public class CoursewareServiceImpl implements CoursewareService{
         } catch (Exception e) {
             logger.error("根据章节id查询失败------------------->");
             e.printStackTrace();
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
         return list;
     }
@@ -82,7 +82,7 @@ public class CoursewareServiceImpl implements CoursewareService{
         } catch (Exception e) {
             logger.error("删除课件下载失败------------------->");
             e.printStackTrace();
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 }

@@ -100,4 +100,9 @@
       status = #{status,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="updateOverdue">
+    SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+    update homework_score t1 left join homework t2 on t1.homework_id = t2.id set t1.status = '5'
+    where unix_timestamp(now()) > unix_timestamp(t2.deadline)
+  </select>
 </mapper>

@@ -50,7 +50,7 @@ public class HomeworkItemController {
     }
 
     @RequestMapping(value = "",method = RequestMethod.POST)
-    public @ResponseBody Map<String,Object> addHomework(HomeworkItem homeworkItem, HttpServletRequest request){
+    public @ResponseBody Map<String,Object> addHomeworkItem(HomeworkItem homeworkItem, HttpServletRequest request){
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
             if (request.getSession().getAttribute("teacherId") != null) {
@@ -69,7 +69,7 @@ public class HomeworkItemController {
     }
 
     @RequestMapping(value = "/{urlHomeworkId}",method = RequestMethod.DELETE)
-    public @ResponseBody Map<String,Object> deleteHomework(@PathVariable("urlHomeworkId") int urlHomeworkId,HttpServletRequest request){
+    public @ResponseBody Map<String,Object> deleteHomeworkItem(@PathVariable("urlHomeworkId") int urlHomeworkId,HttpServletRequest request){
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
             if (request.getSession().getAttribute("teacherId") != null) {
@@ -85,7 +85,7 @@ public class HomeworkItemController {
 
 
     @RequestMapping(value = "/{urlHomeworkId}",method = RequestMethod.PUT)
-    public @ResponseBody Map<String,Object> modifyHomework(HttpServletRequest request, HomeworkItem homeworkItem){
+    public @ResponseBody Map<String,Object> modifyHomeworkItem(HttpServletRequest request, HomeworkItem homeworkItem){
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
             if (request.getSession().getAttribute("teacherId") != null) {

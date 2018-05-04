@@ -22,7 +22,7 @@ public class Homework {
 
     private String description;
 
-    private List<HomeworkScore> scores;
+    private HomeworkScore homeworkScore;
 
     private List<HomeworkItem> items;
 
@@ -89,19 +89,19 @@ public class Homework {
         this.items = items;
     }
 
-    public List<HomeworkScore> getScores() {
-        return scores;
-    }
-
-    public void setScores(List<HomeworkScore> scores) {
-        this.scores = scores;
-    }
-
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public HomeworkScore getHomeworkScore() {
+        return homeworkScore;
+    }
+
+    public void setHomeworkScore(HomeworkScore homeworkScore) {
+        this.homeworkScore = homeworkScore;
     }
 }

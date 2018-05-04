@@ -17,6 +17,8 @@ public class HomeworkItem {
 
     private Integer homeworkId;
 
+    private HomeworkProgress homeworkProgress;
+
     public HomeworkItem(Integer id, String questionNum, String detail, String type, String answer, String remark, Float score, Integer homeworkId) {
         this.id = id;
         this.questionNum = questionNum;
@@ -95,4 +97,13 @@ public class HomeworkItem {
     public void setHomeworkId(Integer homeworkId) {
         this.homeworkId = homeworkId;
     }
+
+    public HomeworkProgress getHomeworkProgress() {
+        return homeworkProgress;
+    }
+
+    public void setHomeworkProgress(HomeworkProgress homeworkProgress) {
+        this.homeworkProgress = homeworkProgress;
+    }
+
 }

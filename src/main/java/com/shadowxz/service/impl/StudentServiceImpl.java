@@ -34,7 +34,7 @@ public class StudentServiceImpl implements StudentService{
         } catch (Exception e) {
             logger.error("根据学号查询密码失败------------------->");
             e.printStackTrace();
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
         return result ;
     }
@@ -48,7 +48,7 @@ public class StudentServiceImpl implements StudentService{
         } catch (Exception e) {
             logger.error("根据学号查询学生失败------------------->");
             e.printStackTrace();
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
         return student;
     }
@@ -60,7 +60,7 @@ public class StudentServiceImpl implements StudentService{
         } catch (Exception e) {
             logger.error("根据学号查询学生失败------------------->");
             e.printStackTrace();
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 
@@ -72,7 +72,7 @@ public class StudentServiceImpl implements StudentService{
         } catch (Exception e) {
             logger.error("根据班级查询学生失败------------------->");
             e.printStackTrace();
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
         return list;
     }
@@ -84,7 +84,7 @@ public class StudentServiceImpl implements StudentService{
             list = studentMapper.selectStudentIdByClazzs(clazzList);
         } catch (Exception e) {
             logger.error("根据班级查询学号失败------------------->");
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
         return list;
     }
@@ -96,7 +96,7 @@ public class StudentServiceImpl implements StudentService{
         } catch (Exception e) {
             logger.error("添加学生信息失败------------------->");
             e.printStackTrace();
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
     }
 
@@ -109,7 +109,7 @@ public class StudentServiceImpl implements StudentService{
         } catch (Exception e) {
             logger.error("查询所有班级失败------------------->");
             e.printStackTrace();
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
         return list;
     }

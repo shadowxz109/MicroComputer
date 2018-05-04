@@ -5,11 +5,7 @@ import java.util.Date;
 public class HomeworkProgress {
     private Integer id;
 
-    private String homeworkId;
-
     private String studentId;
-
-    private String questionNum;
 
     private String answer;
 
@@ -21,18 +17,29 @@ public class HomeworkProgress {
 
     private String type;
 
-    private HomeworkItem item;
+    private Integer itemId;
 
-    public HomeworkProgress(Integer id, String homeworkId, String studentId, String questionNum, String answer, String status, Float score, Date finishDate, String type) {
+    private Student student;
+
+    public HomeworkProgress(Integer id, String studentId, String answer, String status, Float score, Date finishDate, String type, Integer itemId) {
         this.id = id;
-        this.homeworkId = homeworkId;
         this.studentId = studentId;
-        this.questionNum = questionNum;
         this.answer = answer;
         this.status = status;
         this.score = score;
         this.finishDate = finishDate;
         this.type = type;
+        this.itemId = itemId;
+    }
+
+    public HomeworkProgress(String studentId, String answer, String status, Float score, Date finishDate, String type, Integer itemId) {
+        this.studentId = studentId;
+        this.answer = answer;
+        this.status = status;
+        this.score = score;
+        this.finishDate = finishDate;
+        this.type = type;
+        this.itemId = itemId;
     }
 
     public HomeworkProgress() {
@@ -47,28 +54,12 @@ public class HomeworkProgress {
         this.id = id;
     }
 
-    public String getHomeworkId() {
-        return homeworkId;
-    }
-
-    public void setHomeworkId(String homeworkId) {
-        this.homeworkId = homeworkId == null ? null : homeworkId.trim();
-    }
-
     public String getStudentId() {
         return studentId;
     }
 
     public void setStudentId(String studentId) {
         this.studentId = studentId == null ? null : studentId.trim();
-    }
-
-    public String getQuestionNum() {
-        return questionNum;
-    }
-
-    public void setQuestionNum(String questionNum) {
-        this.questionNum = questionNum == null ? null : questionNum.trim();
     }
 
     public String getAnswer() {
@@ -111,11 +102,19 @@ public class HomeworkProgress {
         this.type = type == null ? null : type.trim();
     }
 
-    public HomeworkItem getItem() {
-        return item;
+    public Integer getItemId() {
+        return itemId;
     }
 
-    public void setItem(HomeworkItem item) {
-        this.item = item;
+    public void setItemId(Integer itemId) {
+        this.itemId = itemId;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 }

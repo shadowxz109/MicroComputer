@@ -20,4 +20,6 @@ public interface HomeworkProgressService {
     void deleteHPByStudentId(Map<String,Object> map);
 
     void modifyHomeworkProgress(HomeworkProgress homeworkProgress);
+
+    HomeworkProgress findHPById(Integer id);
 }

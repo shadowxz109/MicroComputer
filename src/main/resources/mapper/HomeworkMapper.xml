@@ -35,7 +35,7 @@
     <result property="deadline" column="deadline" />
     <result property="teacherId" column="teacher_id"/>
     <result property="description" column="description" />
-    <collection property="scores" ofType="com.shadowxz.domain.HomeworkScore">
+    <association property="homeworkScore" javaType="com.shadowxz.domain.HomeworkScore">
       <result property="id" column="score_id" />
       <result property="homeworkId" column="homework_id"/>
       <result property="studentId" column="student_id"/>
@@ -45,6 +45,48 @@
         <result property="studentId" column="scores_student_id" />
         <result property="name" column="name" />
         <result property="clazz" column="clazz" />
+      </association>
+    </association>
+  </resultMap>
+  <resultMap id="StuScoreResultMap" type="com.shadowxz.domain.Homework">
+    <result property="id" column="id" />
+    <result property="chapterId" column="chapter_id" />
+    <result property="pulishTime" column="pulish_time" />
+    <result property="deadline" column="deadline" />
+    <result property="teacherId" column="teacher_id"/>
+    <result property="description" column="description" />
+    <association property="homeworkScore" javaType="com.shadowxz.domain.HomeworkScore">
+      <result property="id" column="score_id" />
+      <result property="homeworkId" column="homework_id"/>
+      <result property="studentId" column="student_id"/>
+      <result property="scores" column="scores"/>
+      <result property="status" column="status" />
+      <result property="studentId" column="student_id" />
+    </association>
+  </resultMap>
+  <resultMap id="ScoreDetailResultMap" type="com.shadowxz.domain.Homework">
+    <result property="id" column="id" />
+    <result property="chapterId" column="chapter_id" />
+    <result property="pulishTime" column="pulish_time" />
+    <result property="deadline" column="deadline" />
+    <result property="description" column="description" />
+    <collection property="items" ofType="com.shadowxz.domain.HomeworkItem">
+      <result property="id" column="item_id" />
+      <result property="questionNum" column="question_num"/>
+      <result property="detail" column="detail"/>
+      <result property="type" column="type"/>
+      <result property="answer" column="answer"/>
+      <result property="remark" column="remark"/>
+      <result property="score" column="score"/>
+      <association property="homeworkProgress" javaType="com.shadowxz.domain.HomeworkProgress">
+        <result property="id" column="progress_id" />
+        <result property="studentId" column="student_id" />
+        <result property="answer" column="progress_answer" />
+        <result property="status" column="status" />
+        <result property="score" column="progress_score" />
+        <result property="type" column="progress_type" />
+        <result property="itemId" column="item_id"/>
+        <result property="finishDate" column="finish_date"/>
       </association>
     </collection>
   </resultMap>
@@ -57,6 +99,43 @@
     from homework
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <!--一个学生单次作业完成情况详情-->
+  <select id="selectStuScoreByHwIdAndStuId" parameterType="java.util.Map" resultMap="ScoreDetailResultMap">
+    select t1.id as id,t1.chapter_id,t1.pulish_time,t1.deadline,t1.teacher_id,t1.description,
+           t2.id as item_id,t2.question_num,t2.detail,t2.remark,t2.score,t2.answer,t2.type,
+           t3.id as progress_id,t3.student_id,t3.answer as progress_answer,t3.status,t3.score as progress_score,t3.type as progress_type,t3.item_id,t3.finish_date
+    from homework t1
+    left join homework_item t2
+      on t1.id = t2.homework_id
+    left join homework_progress t3
+      on t2.id = t3.item_id
+    <where>
+      <if test="id != null">
+        t1.id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="studentId != null">
+        and t3.student_id = #{studentId,jdbcType=VARCHAR}
+      </if>
+    </where>
+    order by t2.question_num asc
+  </select>
+  <!--一个学生所有作业完成情况-->
+  <select id="selectStuScoreByStutasAndStuId" resultMap="StuScoreResultMap" parameterType="java.util.Map">
+    select t1.id as id,t1.chapter_id,t1.pulish_time,t1.deadline,t1.teacher_id,t1.description,
+           t2.id as score_id,t2.homework_id,t2.student_id,t2.scores,t2.status
+    from homework t1
+    left join homework_score t2
+      on t1.id = t2.homework_id
+    <where>
+      <if test="studentId != null">
+        t2.student_id = #{studentId,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null">
+        and t2.status = #{status,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+  <!--单次作业详情-->
   <select id="selectHomeDetailById" parameterType="java.lang.Integer" resultMap="DetailResultMap">
     select t1.id as id,t1.chapter_id,t1.pulish_time,t1.deadline,t1.teacher_id,t1.description,
             t2.id as item_id,t2.question_num,t2.detail,t2.remark,t2.score,t2.answer,t2.type
@@ -65,6 +144,7 @@
       on t1.id = t2.homework_id
     where t1.id = #{id,jdbcType=INTEGER}
   </select>
+  <!--一个学生所有作业统计-->
   <select id="selectHwScoresByStuId" parameterType="java.lang.String" resultMap="ScoreResultMap">
     select t1.id as id,t1.chapter_id,t1.pulish_time,t1.deadline,t1.teacher_id,t1.description,
            t2.id as score_id,t2.homework_id,t2.student_id,t2.scores,t2.status,
@@ -76,6 +156,7 @@
       on t2.student_id = t3.student_id
     where t3.student_id = #{studentId,jdbcType=VARCHAR}
   </select>
+  <!--单次作业一个班作业完成情况-->
   <select id="selectHwScoresByIdAndClazz" parameterType="java.util.Map" resultMap="ScoreResultMap">
     select t1.id as id,t1.chapter_id,t1.pulish_time,t1.deadline,t1.teacher_id,
            t2.id as score_id,t2.homework_id,t2.student_id,t2.scores,t2.status,
@@ -86,13 +167,14 @@
     left join student t3
       on t2.student_id = t3.student_id
     <where>
-      <if test="homeworkId != null">
+      <if test="id != null">
         t1.id = #{id,jdbcType=INTEGER}
       </if>
       <if test="clazz != null">
         and t3.clazz = #{clazz,jdbcType=VARCHAR}
       </if>
     </where>
+    order by t3.clazz,t2.student_id asc
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from homework

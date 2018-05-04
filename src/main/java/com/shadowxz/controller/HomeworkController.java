@@ -73,7 +73,7 @@ public class HomeworkController {
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
             Map<String,Object> map = new HashMap<>(2);
-            map.put("homeworkId",homeworkId);
+            map.put("id",homeworkId);
             map.put("clazz",clazz);
             Homework homework = homeworkService.findScoresByIdAndClazz(map);
             result.put("data",homework);
@@ -85,21 +85,41 @@ public class HomeworkController {
         return result;
     }
 
-
-    @RequestMapping(value = "/student/{studentId}",method = RequestMethod.GET)
-    public @ResponseBody Map<String,Object> getStudHomeworkScore(@PathVariable("studentId") String studentId){
+    @RequestMapping(value = "/list/student/{studentId}",method = RequestMethod.GET)
+    public @ResponseBody Map<String,Object> getStudentHomeworkScore(@PathVariable("studentId") String studentId,
+                                                                    @RequestParam("status") String status){
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
-            Homework homework = homeworkService.findScoresByStudentId(studentId);
+            Map<String,Object> map = new HashMap<>(2);
+            map.put("status",status);
+            map.put("studentId",studentId);
+            Homework homework = homeworkService.findStuScoreByStutasAndStuId(map);
             result.put("data",homework);
             result.put("msg_no",Constant.GET_DATA_SUCC);
         } catch (Exception e) {
-            logger.error("获取学号作业成绩失败",e);
+            logger.error("获取学生所有作业完成情况",e);
             result.put("msg_no",Constant.GET_DATA_ERR);
         }
         return result;
     }
 
+    @RequestMapping(value = "/{homeworkId}/student/{studentId}",method = RequestMethod.GET)
+    public @ResponseBody Map<String,Object> getStudentHomeworkScoreDetail(@PathVariable("homeworkId") int homeworkId,
+                                                                  @PathVariable("studentId") String studentId){
+        Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
+        try {
+            Map<String,Object> map = new HashMap<>(2);
+            map.put("id",homeworkId);
+            map.put("studentId",studentId);
+            Homework homework = homeworkService.findStuScoreByHwIdAndStuId(map);
+            result.put("data",homework);
+            result.put("msg_no",Constant.GET_DATA_SUCC);
+        } catch (Exception e) {
+            logger.error("获取学生单次作业成绩失败",e);
+            result.put("msg_no",Constant.GET_DATA_ERR);
+        }
+        return result;
+    }
 
     @Transactional(rollbackFor=Exception.class)
     @RequestMapping(value = "",method = RequestMethod.POST)

@@ -30,7 +30,7 @@ public class TeacherServiceImpl implements TeacherService {
         } catch (Exception e) {
             logger.error("根据教师编号查询密码失败------------------->");
             e.printStackTrace();
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
         return result ;
     }
