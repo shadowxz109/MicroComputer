@@ -1,5 +1,6 @@
 package com.shadowxz.service.impl;
 
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -73,8 +74,8 @@ public class HomeworkServiceImpl implements HomeworkService{
 
     //某班学生单次作业完成情况
     @Override
-    public Homework findScoresByIdAndClazz(Map<String, Object> map) {
-        Homework homework = null;
+    public List<Homework> findScoresByIdAndClazz(Map<String, Object> map) {
+        List<Homework> homework = null;
         try {
             homework = homeworkMapper.selectHwScoresByIdAndClazz(map);
         } catch (Exception e) {
@@ -128,8 +129,8 @@ public class HomeworkServiceImpl implements HomeworkService{
 
     //单个学生所有作业完成状态
     @Override
-    public Homework findStuScoreByStutasAndStuId(Map<String, Object> map) {
-        Homework homework = null;
+    public List<Homework> findStuScoreByStutasAndStuId(Map<String, Object> map) {
+        List<Homework> homework = null;
         try {
             homework = homeworkMapper.selectStuScoreByStutasAndStuId(map);
         } catch (Exception e) {

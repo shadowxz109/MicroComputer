@@ -12,11 +12,13 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -49,19 +51,23 @@ public class CoursewareController {
     @Autowired
     ChapterService chapterService;
 
-    @RequestMapping(value = "/download/{coursewareId}",method = RequestMethod.GET)
-    public ResponseEntity<byte[]> downloadCourse(@PathVariable("coursewareId") int coursewareId,HttpServletRequest request){
+    @Value("${upload.dir}")
+    String uploadDir;
+
+    @Transactional
+    @RequestMapping(value = "/download/{coursewareId}/{filename:.+}",method = RequestMethod.GET)
+    public ResponseEntity<byte[]> downloadCourse(@PathVariable("coursewareId") int coursewareId,@PathVariable("filename") String filename,HttpServletRequest request){
         ResponseEntity<byte[]> result = null;
         try {
             Courseware courseware = coursewareService.findCoursewareById(coursewareId);
             if(courseware != null){
-                String filename = courseware.getFile();
-                String path = request.getServletContext().getRealPath("/courseware/");
+                String path = uploadDir + "/courseware/";
                 File file = new File(path + File.separator + filename);
                 HttpHeaders headers = new HttpHeaders();
                 String downloadFielName = new String(filename.getBytes("UTF-8"),"iso-8859-1");
                 headers.setContentDispositionFormData("attachment", downloadFielName);
                 headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+                coursewareService.addDownloadTimes(coursewareId);
                 result = new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file),headers, HttpStatus.CREATED);
             }
         } catch (Exception e) {
@@ -77,7 +83,7 @@ public class CoursewareController {
         try {
             List<Courseware> coursewares = coursewareService.findCoursewareByChapterId(chapterId);
             result.put("msg_no", Constant.GET_DATA_SUCC);
-            result.put("data", coursewares);
+            result.put("coursewares", coursewares);
         } catch (Exception e) {
             logger.error("查询课件列表失败",e);
             result.put("msg_no",Constant.GET_DATA_ERR);
@@ -85,7 +91,21 @@ public class CoursewareController {
         return result;
     }
 
-    @RequestMapping(value = "/item/{chapterId}",method = RequestMethod.POST)
+    @RequestMapping(value = "/list",method = RequestMethod.GET)
+    public @ResponseBody Map<String,Object> getAllCoursewareList(){
+        Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
+        try {
+            List<Courseware> coursewares = coursewareService.findAllCoursewares();
+            result.put("msg_no", Constant.GET_DATA_SUCC);
+            result.put("coursewares", coursewares);
+        } catch (Exception e) {
+            logger.error("查询课件列表失败",e);
+            result.put("msg_no",Constant.GET_DATA_ERR);
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/{chapterId}",method = RequestMethod.POST)
     public @ResponseBody Map<String,Object> uploadCourse(@PathVariable("chapterId") String chapterId, @RequestParam("file")MultipartFile file,
                                                          HttpServletRequest request){
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
@@ -93,7 +113,7 @@ public class CoursewareController {
             Object teacherId = request.getSession().getAttribute("teacherId");
             if(teacherId != null && file != null) {
                 String filename = file.getOriginalFilename();
-                String path = request.getServletContext().getRealPath("/courseware/");
+                String path = uploadDir + "/courseware/";
                 File filepath = new File(path, filename);
                 if (!filepath.getParentFile().exists()) {
                     filepath.getParentFile().mkdirs();
@@ -124,7 +144,7 @@ public class CoursewareController {
         return result;
     }
 
-    @RequestMapping(value = "/item/{coursewareId}",method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{coursewareId}",method = RequestMethod.DELETE)
     public @ResponseBody Map<String,Object> deleteCoureware(@PathVariable("coursewareId") int coursewareId,HttpServletRequest request){
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {

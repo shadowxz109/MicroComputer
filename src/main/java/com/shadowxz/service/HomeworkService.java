@@ -1,5 +1,6 @@
 package com.shadowxz.service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.shadowxz.domain.Homework;
@@ -12,7 +13,7 @@ import com.shadowxz.domain.Homework;
  */
 public interface HomeworkService {
 
-    Homework findScoresByIdAndClazz(Map<String,Object> map);
+    List<Homework> findScoresByIdAndClazz(Map<String,Object> map);
 
     Homework findStuScoreByHwIdAndStuId(Map<String,Object> map);
 
@@ -20,7 +21,7 @@ public interface HomeworkService {
 
     Homework findByHomeworkId(Integer id);
 
-    Homework findStuScoreByStutasAndStuId(Map<String,Object> map);
+    List<Homework> findStuScoreByStutasAndStuId(Map<String,Object> map);
 
     void addHomework(Homework homework);
 

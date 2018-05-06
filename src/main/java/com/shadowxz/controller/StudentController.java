@@ -115,16 +115,21 @@ public class StudentController {
     }
 
     @RequestMapping(value = "/{urlStudentId}",method = RequestMethod.PUT)
-    public @ResponseBody Map<String,Object> modifyStudetInfo(@PathVariable("urlStudentId") String urlStudentId,HttpServletRequest request){
+    public @ResponseBody Map<String,Object> modifyStudetInfo(@PathVariable("urlStudentId") String urlStudentId,HttpServletRequest request,Student newStudent){
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
             Object studentId = request.getSession().getAttribute("studentId");
             if(studentId != null && studentId.toString().equals(urlStudentId)){
                 Student student = studentService.findStudentByStudentId(urlStudentId);
                 if(student != null){
+                    student.setEmail(newStudent.getEmail());
+                    student.setGender(newStudent.getGender());
                     studentService.modifyStudentInfo(student);
                     result.put("msg_no",Constant.GET_DATA_SUCC);
                 }
+            }else{
+                result.put("msg_no",Constant.GET_DATA_ERR);
+                result.put("msg","请先登录");
             }
         } catch (Exception e) {
             logger.error("修改学生信息失败",e);
@@ -178,6 +183,8 @@ public class StudentController {
                     status.setMaxAge(60*60*24*7);
                     status.setPath("/");
                     response.addCookie(status);
+                    Student student = studentService.findStudentByStudentId(studentId);
+                    result.put("student",student);
                     result.put("msg_no", Constant.LOGIN_CODE_SUCC);
                     result.put("msg","登录成功");
                 }else{

@@ -24,5 +24,7 @@ public interface CoursewareMapper {
 
     int addDownloadTimes(Integer id);
 
+    List<Courseware> selectAllCoursewares();
+
     List<Courseware> selectByChapterId(String chapterId);
 }

@@ -21,4 +21,6 @@ public interface CoursewareService {
     List<Courseware> findCoursewareByChapterId(String chapterId);
 
     void deleteCoursewares(Integer id);
+
+    List<Courseware> findAllCoursewares();
 }

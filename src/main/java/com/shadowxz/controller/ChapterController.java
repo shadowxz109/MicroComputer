@@ -41,11 +41,11 @@ public class ChapterController {
         try {
             if(request.getSession().getAttribute("teacherId") != null){
                 chapterService.addChapter(chapter);
-                result.put("msg_ no",Constant.GET_DATA_SUCC);
+                result.put("msg_no",Constant.GET_DATA_SUCC);
             }
         } catch (Exception e) {
             logger.error("新增章节信息失败",e);
-            result.put("msg_ no",Constant.GET_DATA_ERR);
+            result.put("msg_no",Constant.GET_DATA_ERR);
         }
         return result;
     }
@@ -56,11 +56,11 @@ public class ChapterController {
         try {
             if(request.getSession().getAttribute("teacherId") != null){
                 chapterService.modifyChapter(chapter);
-                result.put("msg_ no",Constant.GET_DATA_SUCC);
+                result.put("msg_no",Constant.GET_DATA_SUCC);
             }
         } catch (Exception e) {
             logger.error("修改章节信息失败",e);
-            result.put("msg_ no",Constant.GET_DATA_ERR);
+            result.put("msg_no",Constant.GET_DATA_ERR);
         }
         return result;
     }
@@ -72,26 +72,26 @@ public class ChapterController {
         try {
             if(request.getSession().getAttribute("teacherId") != null){
                 chapterService.deleteChapterById(chapterId);
-                result.put("msg_ no",Constant.GET_DATA_SUCC);
+                result.put("msg_no",Constant.GET_DATA_SUCC);
             }
         } catch (Exception e) {
             logger.error("修改章节信息失败",e);
-            result.put("msg_ no",Constant.GET_DATA_ERR);
+            result.put("msg_no",Constant.GET_DATA_ERR);
         }
         return result;
     }
 
 
-    @RequestMapping(value = "/father/{fatherId}",method = RequestMethod.GET)
+    @RequestMapping(value = "/list/{fatherId}",method = RequestMethod.GET)
     public @ResponseBody Map<String,Object> findChildrenChapter(@PathVariable("fatherId") String fatherId){
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
             List<Chapter> list = chapterService.findChilByFatherId(fatherId);
-            result.put("data",list);
-            result.put("msg_ no",Constant.GET_DATA_SUCC);
+            result.put("chapters",list);
+            result.put("msg_no",Constant.GET_DATA_SUCC);
         } catch (Exception e) {
             logger.error("查询子节点章节信息失败",e);
-            result.put("msg_ no",Constant.GET_DATA_ERR);
+            result.put("msg_no",Constant.GET_DATA_ERR);
         }
         return result;
     }
@@ -103,11 +103,11 @@ public class ChapterController {
             if(request.getSession().getAttribute("teacherId") != null) {
                 List<Chapter> list = chapterService.findAllChapters();
                 result.put("data", list);
-                result.put("msg_ no", Constant.GET_DATA_SUCC);
+                result.put("msg_no", Constant.GET_DATA_SUCC);
             }
         } catch (Exception e) {
             logger.error("查询所有章节信息失败",e);
-            result.put("msg_ no",Constant.GET_DATA_ERR);
+            result.put("msg_no",Constant.GET_DATA_ERR);
         }
         return result;
     }

@@ -85,4 +85,17 @@ public class CoursewareServiceImpl implements CoursewareService{
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public List<Courseware> findAllCoursewares() {
+        List<Courseware> list = null;
+        try {
+            list  = coursewareMapper.selectAllCoursewares();
+        } catch (Exception e) {
+            logger.error("查询所有课件失败------------------->");
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return list;
+    }
 }

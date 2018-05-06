@@ -1,5 +1,6 @@
 package com.shadowxz.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -24,11 +25,11 @@ public interface HomeworkMapper {
 
     Homework selectHomeDetailById(Integer id);
 
-    Homework selectHwScoresByIdAndClazz(Map<String,Object> map);
+    List<Homework> selectHwScoresByIdAndClazz(Map<String,Object> map);
 
     Homework selectHwScoresByStuId(String studentId);
 
     Homework selectStuScoreByHwIdAndStuId(Map<String,Object> map);
 
-    Homework selectStuScoreByStutasAndStuId(Map<String,Object> map);
+    List<Homework> selectStuScoreByStutasAndStuId(Map<String,Object> map);
 }

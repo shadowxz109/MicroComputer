@@ -58,7 +58,7 @@ public class HomeworkController {
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
             Homework homework = homeworkService.findDetailByHomeworkId(homeworkId);
-            result.put("data",homework);
+            result.put("homework",homework);
             result.put("msg_no",Constant.GET_DATA_SUCC);
         } catch (Exception e) {
             logger.error("获取作业详情失败",e);
@@ -75,8 +75,8 @@ public class HomeworkController {
             Map<String,Object> map = new HashMap<>(2);
             map.put("id",homeworkId);
             map.put("clazz",clazz);
-            Homework homework = homeworkService.findScoresByIdAndClazz(map);
-            result.put("data",homework);
+            List<Homework> homeworks = homeworkService.findScoresByIdAndClazz(map);
+            result.put("homeworks",homeworks);
             result.put("msg_no",Constant.GET_DATA_SUCC);
         } catch (Exception e) {
             logger.error("获取班级作业成绩失败",e);
@@ -92,9 +92,12 @@ public class HomeworkController {
         try {
             Map<String,Object> map = new HashMap<>(2);
             map.put("status",status);
+            if(status.equals("all")){
+                map.put("status",null);
+            }
             map.put("studentId",studentId);
-            Homework homework = homeworkService.findStuScoreByStutasAndStuId(map);
-            result.put("data",homework);
+            List<Homework> homeworks = homeworkService.findStuScoreByStutasAndStuId(map);
+            result.put("homeworks",homeworks);
             result.put("msg_no",Constant.GET_DATA_SUCC);
         } catch (Exception e) {
             logger.error("获取学生所有作业完成情况",e);
@@ -112,7 +115,7 @@ public class HomeworkController {
             map.put("id",homeworkId);
             map.put("studentId",studentId);
             Homework homework = homeworkService.findStuScoreByHwIdAndStuId(map);
-            result.put("data",homework);
+            result.put("homework",homework);
             result.put("msg_no",Constant.GET_DATA_SUCC);
         } catch (Exception e) {
             logger.error("获取学生单次作业成绩失败",e);
@@ -140,7 +143,7 @@ public class HomeworkController {
                         scores.add(score);
                     }
                     homeworkScoreService.addHomeworkScores(scores);
-                    result.put("data",homework);
+                    result.put("homework",homework);
                     result.put("msg_no",Constant.GET_DATA_SUCC);
                 }
             }

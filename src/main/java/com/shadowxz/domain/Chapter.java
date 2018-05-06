@@ -1,11 +1,15 @@
 package com.shadowxz.domain;
 
+import java.util.List;
+
 public class Chapter {
     private String chapterId;
 
     private String chapterName;
 
     private String fatherId;
+
+    private List<Chapter> children;
 
     public Chapter(String chapterId, String chapterName, String fatherId) {
         this.chapterId = chapterId;
@@ -39,5 +43,13 @@ public class Chapter {
 
     public void setFatherId(String fatherId) {
         this.fatherId = fatherId == null ? null : fatherId.trim();
+    }
+
+    public List<Chapter> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Chapter> children) {
+        this.children = children;
     }
 }
