@@ -8,6 +8,14 @@
       <arg column="father_id" jdbcType="VARCHAR" javaType="java.lang.String" />
     </constructor>
   </resultMap>
+  <resultMap id="DetailResultMap" type="com.shadowxz.domain.Chapter" >
+    <result property="chapterId" column="chapter_id" />
+    <result property="chapterName" column="chapter_name" />
+    <collection property="children" ofType="com.shadowxz.domain.Chapter">
+      <result property="chapterId" column="child_chapter_id" />
+      <result property="chapterName" column="child_chapter_name" />
+    </collection>
+  </resultMap>
   <sql id="Base_Column_List" >
     chapter_id, chapter_name, father_id
   </sql>
@@ -22,11 +30,12 @@
     <include refid="Base_Column_List" />
     from chapter
   </select>
-  <select id="selectChildByFatherId" resultMap="BaseResultMap" parameterType="java.lang.String">
-     select
-    <include refid="Base_Column_List" />
-    from chapter
-    where father_id = #{fatherId,jdbcType=VARCHAR}
+  <select id="selectChildByFatherId" resultMap="DetailResultMap" parameterType="java.lang.String">
+     select distinct t1.chapter_id,t1.chapter_name,t2.chapter_id as child_chapter_id,
+       t2.chapter_name as child_chapter_name
+     from chapter t1
+       left join chapter t2 on t1.chapter_id = t2.father_id
+    where t1.father_id = #{fatherId,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from chapter

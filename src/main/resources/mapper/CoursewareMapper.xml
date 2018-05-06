@@ -23,20 +23,28 @@
   </select>
   <select id="selectByChapterId" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select
-   id , name, upload_date, download_times
+    <include refid="Base_Column_List" />
     from courseware
     where chapter_id = #{chapter_id,jdbcType=VARCHAR}
+    order by courseware.upload_date desc
+  </select>
+  <select id="selectAllCoursewares" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from courseware
+
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from courseware
     where id = #{id,jdbcType=INTEGER}
+    order by courseware.upload_date desc
   </delete>
   <insert id="insert" parameterType="com.shadowxz.domain.Courseware" >
     insert into courseware (id, name, chapter_id, 
-      upload_date, download_times, file
+      upload_date, download_times, file,teacher_id
       )
     values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{chapterId,jdbcType=VARCHAR}, 
-      #{uploadDate,jdbcType=TIMESTAMP}, #{downloadTimes,jdbcType=INTEGER}, #{file,jdbcType=VARCHAR}
+      #{uploadDate,jdbcType=TIMESTAMP}, #{downloadTimes,jdbcType=INTEGER}, #{file,jdbcType=VARCHAR},#{teacherId,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.shadowxz.domain.Courseware" >
@@ -124,7 +132,7 @@
   </update>
   <update id="addDownloadTimes" parameterType="java.lang.Integer">
     update courseware
-    set download_times = download_times + 1;
+    set download_times = download_times + 1
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
