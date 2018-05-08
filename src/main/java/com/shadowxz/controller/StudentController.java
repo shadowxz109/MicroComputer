@@ -15,6 +15,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -45,6 +46,51 @@ public class StudentController {
 
     @Autowired
     StudentService studentService;
+
+    @Value("${upload.dir}")
+    String uploadDir;
+
+    @RequestMapping(value = "/picture/{picture:.+}",method = RequestMethod.GET)
+    public ResponseEntity<byte[]> getStudentPic(@PathVariable("picture") String picture){
+        try {
+            String path = uploadDir + "/picture";
+            File file = new File(path + File.separator + picture);
+            HttpHeaders headers = new HttpHeaders();
+            String downloadFielName = new String(picture.getBytes("UTF-8"),"iso-8859-1");
+            headers.setContentDispositionFormData("attachment", downloadFielName);
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file),headers, HttpStatus.CREATED);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return  null;
+        }
+    }
+
+    @RequestMapping(value = "/picture/{studentId}",method = RequestMethod.POST)
+    public @ResponseBody Map<String,Object> uploadCourse(@PathVariable("studentId") String urlStudentId, @RequestParam("file")MultipartFile file,
+                                                         HttpServletRequest request){
+        Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
+        try {
+            Object studentId = request.getSession().getAttribute("studentId");
+            if(studentId != null && file != null && studentId.equals(urlStudentId)) {
+                String filename = file.getOriginalFilename();
+                String path = uploadDir + "/picture/";
+                File filepath = new File(path, filename);
+                if (!filepath.getParentFile().exists()) {
+                    filepath.getParentFile().mkdirs();
+                }
+                file.transferTo(new File(path + File.separator + filename));
+                Student student = studentService.findStudentByStudentId(urlStudentId);
+                student.setPicture(filename);
+                studentService.modifyStudentInfo(student);
+                result.put("msg_no", Constant.GET_DATA_SUCC);
+            }
+        } catch (Exception e) {
+            logger.error("上传课件失败",e);
+            result.put("msg_no",Constant.GET_DATA_ERR);
+        }
+        return result;
+    }
 
     @RequestMapping(value = "/excel",method = RequestMethod.GET)
     public ResponseEntity<byte[]> getExcelTemplate(HttpServletRequest request){

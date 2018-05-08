@@ -1,7 +1,6 @@
 package com.shadowxz.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,8 +22,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.shadowxz.domain.Constant;
 import com.shadowxz.domain.Homework;
+import com.shadowxz.domain.HomeworkItem;
+import com.shadowxz.domain.HomeworkProgress;
 import com.shadowxz.domain.HomeworkScore;
 import com.shadowxz.service.HomeworkItemService;
+import com.shadowxz.service.HomeworkProgressService;
 import com.shadowxz.service.HomeworkScoreService;
 import com.shadowxz.service.HomeworkService;
 import com.shadowxz.service.StudentService;
@@ -46,6 +49,9 @@ public class HomeworkController {
 
     @Autowired
     HomeworkItemService homeworkItemService;
+
+    @Autowired
+    HomeworkProgressService homeworkProgressService;
 
     @Autowired
     HomeworkScoreService homeworkScoreService;
@@ -106,6 +112,51 @@ public class HomeworkController {
         return result;
     }
 
+    @Transactional(rollbackFor=Exception.class)
+    @RequestMapping(value = "/{homeworkId}/student/{studentId}",method = RequestMethod.POST)
+    public @ResponseBody Map<String,Object> postStudentHomeworkScoreDetail(@PathVariable("homeworkId") int homeworkId,
+                                                                          @PathVariable("studentId") String studentId,
+                                                                           HttpServletRequest request,
+                                                                           @RequestBody Homework homework){
+        Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
+        try {
+            List<HomeworkItem> items = homework.getItems();
+            Homework realHomework = homeworkService.findByHomeworkId(homeworkId);
+            List<HomeworkProgress> progresses = new ArrayList<>(items.size());
+            if(realHomework.getDeadline().after(new Date())){
+                if(items != null && items.size() != 0){
+                    for(HomeworkItem item : items){
+                        HomeworkProgress progress  = item.getHomeworkProgress();
+                        if(progress != null){
+                            if ((progress.getType() == null || progress.getType().equals("0") || progress.getType().equals("4")) && item.getAnswer().equals(progress.getAnswer())) {
+                                progress.setScore(item.getScore());
+                            }
+                            progress.setType("0");
+                            progress.setStatus("2");
+                            progress.setStudentId(studentId);
+                            progress.setFinishDate(new Date());
+                            progresses.add(progress);
+                        }
+                    }
+                    homeworkProgressService.addHomeworkProgresss(progresses);
+                    Map<String,Object> map = new HashMap<>(2);
+                    map.put("studentId",studentId);
+                    map.put("homeworkId",homeworkId);
+                    HomeworkScore homeworkScore = homeworkScoreService.findByStuIdAndHwId(map);
+                    homeworkScore.setStatus("1");
+                    homeworkScoreService.modifyHomeworkScore(homeworkScore);
+                }
+                result.put("msg_no",Constant.GET_DATA_SUCC);
+            }else{
+                result.put("msg_no",Constant.GET_DATA_ERR);
+            }
+        } catch (Exception e) {
+            logger.error("提交学生单次作业失败",e);
+            result.put("msg_no",Constant.GET_DATA_ERR);
+        }
+        return result;
+    }
+
     @RequestMapping(value = "/{homeworkId}/student/{studentId}",method = RequestMethod.GET)
     public @ResponseBody Map<String,Object> getStudentHomeworkScoreDetail(@PathVariable("homeworkId") int homeworkId,
                                                                   @PathVariable("studentId") String studentId){
@@ -124,25 +175,15 @@ public class HomeworkController {
         return result;
     }
 
-    @Transactional(rollbackFor=Exception.class)
+
     @RequestMapping(value = "",method = RequestMethod.POST)
     public @ResponseBody Map<String,Object> addHomework(Homework homework, @RequestParam("clazzs") String clazzs, HttpServletRequest request){
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
             if (request.getSession().getAttribute("teacherId") != null) {
                 if(clazzs != null){
-                    String[] clazz = clazzs.split(",");
-                    List<String> studentIds = studentService.findStudentIdByClass(new ArrayList<>(Arrays.asList(clazz)));
                     homework.setPulishTime(new Date());
-                    homeworkService.addHomework(homework);
-                    int homeworkId = homework.getId();
-                    HomeworkScore score = null;
-                    List<HomeworkScore> scores = new ArrayList<>(studentIds.size());
-                    for (int i = 0; i < studentIds.size() ; i++) {
-                        score  = new HomeworkScore(homeworkId,studentIds.get(i),0.0f,"0");
-                        scores.add(score);
-                    }
-                    homeworkScoreService.addHomeworkScores(scores);
+                    homeworkService.addHomework(homework,clazzs);
                     result.put("homework",homework);
                     result.put("msg_no",Constant.GET_DATA_SUCC);
                 }
@@ -160,7 +201,6 @@ public class HomeworkController {
         try {
             if (request.getSession().getAttribute("teacherId") != null) {
                 homeworkService.deleteHomeworkById(urlHomeworkId);
-                homeworkItemService.deleteByHomeworkId(urlHomeworkId);
                 result.put("msg_no",Constant.GET_DATA_SUCC);
             }
         } catch (Exception e) {

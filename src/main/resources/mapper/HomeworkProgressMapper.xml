@@ -42,6 +42,15 @@
     delete from homework_progress
     where id = #{id,jdbcType=INTEGER}
   </delete>
+  <insert id="insertHomeworkProgresss"  parameterType="java.util.List">
+    insert into homework_progress (student_id, answer, status, score, finish_date, type, item_id)
+    values
+    <foreach collection="list" item="progress" index="index" separator=",">
+      (#{progress.studentId,jdbcType=VARCHAR}, #{progress.answer,jdbcType=VARCHAR},
+      #{progress.status,jdbcType=CHAR}, #{progress.score,jdbcType=REAL}, #{progress.finishDate,jdbcType=TIMESTAMP},
+      #{progress.type,jdbcType=CHAR}, #{progress.itemId,jdbcType=INTEGER})
+    </foreach>
+  </insert>
   <insert id="insert" parameterType="com.shadowxz.domain.HomeworkProgress" >
     insert into homework_progress (id, student_id, answer, 
       status, score, finish_date, 

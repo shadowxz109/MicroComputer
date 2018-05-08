@@ -1,5 +1,7 @@
 package com.shadowxz.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 public class HomeworkScore {
     private Integer id;
 
@@ -11,6 +13,7 @@ public class HomeworkScore {
 
     private String status;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Student student;
 
     public HomeworkScore(Integer id, Integer homeworkId, String studentId, Float scores, String status) {

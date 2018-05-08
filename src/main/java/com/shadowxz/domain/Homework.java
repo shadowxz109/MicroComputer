@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 public class Homework {
     private Integer id;
@@ -22,6 +23,7 @@ public class Homework {
 
     private String description;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private HomeworkScore homeworkScore;
 
     private List<HomeworkItem> items;

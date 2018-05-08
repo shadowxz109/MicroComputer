@@ -17,6 +17,8 @@ public interface HomeworkProgressService {
 
     void addHomeworkProgress(HomeworkProgress homeworkProgress);
 
+    void addHomeworkProgresss(List<HomeworkProgress> progresses);
+
     void deleteHPByStudentId(Map<String,Object> map);
 
     void modifyHomeworkProgress(HomeworkProgress homeworkProgress);

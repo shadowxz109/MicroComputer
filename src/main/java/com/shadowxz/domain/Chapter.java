@@ -2,6 +2,8 @@ package com.shadowxz.domain;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 public class Chapter {
     private String chapterId;
 
@@ -9,6 +11,7 @@ public class Chapter {
 
     private String fatherId;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Chapter> children;
 
     public Chapter(String chapterId, String chapterName, String fatherId) {

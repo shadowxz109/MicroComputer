@@ -23,7 +23,7 @@ public interface HomeworkService {
 
     List<Homework> findStuScoreByStutasAndStuId(Map<String,Object> map);
 
-    void addHomework(Homework homework);
+    void addHomework(Homework homework,String clazzs);
 
     void deleteHomeworkById(Integer id);
 

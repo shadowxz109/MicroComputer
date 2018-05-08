@@ -108,12 +108,12 @@
       on t1.id = t2.homework_id
     left join homework_progress t3
       on t2.id = t3.item_id
+    <if test="studentId != null">
+        and t3.student_id = #{studentId,jdbcType=VARCHAR}
+    </if>
     <where>
       <if test="id != null">
         t1.id = #{id,jdbcType=INTEGER}
-      </if>
-      <if test="studentId != null">
-        and t3.student_id = #{studentId,jdbcType=VARCHAR}
       </if>
     </where>
     order by t2.question_num asc

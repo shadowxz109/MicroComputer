@@ -1,10 +1,13 @@
 package com.shadowxz.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 public class Student {
     private String studentId;
 
     private String name;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String password;
 
     private String clazz;

@@ -25,4 +25,6 @@ public interface HomeworkProgressMapper {
     int updateByPrimaryKey(HomeworkProgress record);
 
     List<HomeworkProgress> selectHPByHwIdAndStuId(Map<String,Object> map);
+
+    int insertHomeworkProgresss(List<HomeworkProgress> progresses);
 }

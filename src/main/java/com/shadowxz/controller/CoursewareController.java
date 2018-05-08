@@ -61,7 +61,7 @@ public class CoursewareController {
         try {
             Courseware courseware = coursewareService.findCoursewareById(coursewareId);
             if(courseware != null){
-                String path = uploadDir + "/courseware/";
+                String path = uploadDir + "/courseware";
                 File file = new File(path + File.separator + filename);
                 HttpHeaders headers = new HttpHeaders();
                 String downloadFielName = new String(filename.getBytes("UTF-8"),"iso-8859-1");
@@ -130,7 +130,7 @@ public class CoursewareController {
                     }
                 }
                 courseware.setChapterId(chapterId);
-                courseware.setFile(file.getOriginalFilename());
+                courseware.setFile(filename);
                 courseware.setUploadDate(new Date());
                 courseware.setDownloadTimes(0);
                 courseware.setTeacherId(teacherId.toString());

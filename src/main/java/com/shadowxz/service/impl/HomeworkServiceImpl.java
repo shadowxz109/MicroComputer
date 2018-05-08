@@ -1,5 +1,8 @@
 package com.shadowxz.service.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -7,9 +10,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.shadowxz.dao.HomeworkItemMapper;
 import com.shadowxz.dao.HomeworkMapper;
+import com.shadowxz.dao.HomeworkScoreMapper;
+import com.shadowxz.dao.MessageMapper;
+import com.shadowxz.dao.StudentMapper;
 import com.shadowxz.domain.Homework;
+import com.shadowxz.domain.HomeworkScore;
+import com.shadowxz.domain.Message;
 import com.shadowxz.service.HomeworkService;
 
 /**
@@ -26,24 +36,58 @@ public class HomeworkServiceImpl implements HomeworkService{
     @Autowired
     HomeworkMapper homeworkMapper;
 
+    @Autowired
+    StudentMapper studentMapper;
+    
+    @Autowired
+    HomeworkScoreMapper homeworkScoreMapper;
+    
+    @Autowired
+    MessageMapper messageMapper;
+
+    @Autowired
+    HomeworkItemMapper homeworkItemMapper;
+    
+    
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public void addHomework(Homework homework) {
+    public void addHomework(Homework homework,String clazzs) {
         try {
+            //todo 题目添加
             homeworkMapper.insertSelective(homework);
+            String[] array = clazzs.split(",");
+            List<String> studentIds = studentMapper.selectStudentIdByClazzs(new ArrayList<>(Arrays.asList(array)));
+            List<HomeworkScore> scores = new ArrayList<>(studentIds.size());
+            for (int i = 0; i < studentIds.size() ; i++) {
+                HomeworkScore score  = new HomeworkScore(homework.getId(),studentIds.get(i),0.0f,"0");
+                scores.add(score);
+            }
+            homeworkScoreMapper.insertHomeworkScores(scores);
+            List<Message> messages = new ArrayList<>(studentIds.size());
+            for (int i = 0; i < studentIds.size() ; i++) {
+                Message message = new Message("1",homework.getId(),"0",studentIds.get(i),"");
+                messages.add(message);
+            }
+            messageMapper.insertMessages(messages);
         } catch (Exception e) {
-            logger.error("插入作业信息失败------------------->");
-            e.printStackTrace();
+            logger.error("插入作业信息失败------------------->",e);
             throw new RuntimeException(e);
         }
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteHomeworkById(Integer id) {
         try {
+            Map<String,Object> map = new HashMap<>(2);
+            map.put("type","2");
+            map.put("contentId",id);
+            messageMapper.deleteByTypeAndContentId(map);
+            homeworkItemMapper.deleteByHomeworkId(id);
             homeworkMapper.deleteByPrimaryKey(id);
+            homeworkScoreMapper.deleteByHomeworkId(id);
         } catch (Exception e) {
-            logger.error("删除作业信息失败------------------->");
-            e.printStackTrace();
+            logger.error("删除作业信息失败------------------->",e);
             throw new RuntimeException(e);
         }
     }
@@ -53,8 +97,7 @@ public class HomeworkServiceImpl implements HomeworkService{
         try {
             homeworkMapper.updateByPrimaryKeySelective(homework);
         } catch (Exception e) {
-            logger.error("修改作业信息失败------------------->");
-            e.printStackTrace();
+            logger.error("修改作业信息失败------------------->",e);
             throw new RuntimeException(e);
         }
     }
@@ -65,8 +108,7 @@ public class HomeworkServiceImpl implements HomeworkService{
         try {
             homework = homeworkMapper.selectByPrimaryKey(id);
         } catch (Exception e) {
-            logger.error("查询作业信息失败------------------->");
-            e.printStackTrace();
+            logger.error("查询作业信息失败------------------->",e);
             throw new RuntimeException(e);
         }
         return homework;
@@ -79,8 +121,7 @@ public class HomeworkServiceImpl implements HomeworkService{
         try {
             homework = homeworkMapper.selectHwScoresByIdAndClazz(map);
         } catch (Exception e) {
-            logger.error("根据作业id和班级查询作业成绩失败------------------->");
-            e.printStackTrace();
+            logger.error("根据作业id和班级查询作业成绩失败------------------->",e);
             throw new RuntimeException(e);
         }
         return homework;
@@ -92,7 +133,7 @@ public class HomeworkServiceImpl implements HomeworkService{
 //        try {
 //            homework = homeworkMapper.selectHwScoresByStuId(studentId);
 //        } catch (Exception e) {
-//            logger.error("根据学号查询作业成绩失败------------------->");
+//            logger.error("根据学号查询作业成绩失败------------------->",e);
 //            e.printStackTrace();
 //            throw new RuntimeException(e);
 //        }
@@ -106,8 +147,7 @@ public class HomeworkServiceImpl implements HomeworkService{
         try {
             homework = homeworkMapper.selectStuScoreByHwIdAndStuId(map);
         } catch (Exception e) {
-            logger.error("根据作业id和学生id查询作业详情失败------------------->");
-            e.printStackTrace();
+            logger.error("根据作业id和学生id查询作业详情失败------------------->",e);
             throw new RuntimeException(e);
         }
         return homework;
@@ -120,8 +160,7 @@ public class HomeworkServiceImpl implements HomeworkService{
         try {
             homework = homeworkMapper.selectHomeDetailById(id);
         } catch (Exception e) {
-            logger.error("根据id查询作业详情失败------------------->");
-            e.printStackTrace();
+            logger.error("根据id查询作业详情失败------------------->",e);
             throw new RuntimeException(e);
         }
         return homework;
@@ -134,8 +173,7 @@ public class HomeworkServiceImpl implements HomeworkService{
         try {
             homework = homeworkMapper.selectStuScoreByStutasAndStuId(map);
         } catch (Exception e) {
-            logger.error("根据学号查询作业完成情况失败------------------->");
-            e.printStackTrace();
+            logger.error("根据学号查询作业完成情况失败------------------->",e);
             throw new RuntimeException(e);
         }
         return homework;

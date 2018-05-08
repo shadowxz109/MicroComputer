@@ -1,6 +1,7 @@
 package com.shadowxz.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.shadowxz.domain.HomeworkScore;
 
@@ -13,4 +14,9 @@ import com.shadowxz.domain.HomeworkScore;
 public interface HomeworkScoreService {
 
     void addHomeworkScores(List<HomeworkScore> scores);
+
+    HomeworkScore findByStuIdAndHwId(Map<String,Object> map);
+
+    void modifyHomeworkScore(HomeworkScore score);
+
 }

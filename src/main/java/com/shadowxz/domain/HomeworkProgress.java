@@ -2,6 +2,8 @@ package com.shadowxz.domain;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 public class HomeworkProgress {
     private Integer id;
 
@@ -19,6 +21,7 @@ public class HomeworkProgress {
 
     private Integer itemId;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Student student;
 
     public HomeworkProgress(Integer id, String studentId, String answer, String status, Float score, Date finishDate, String type, Integer itemId) {

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.shadowxz.dao.MessageMapper" >
+  <resultMap id="BaseResultMap" type="com.shadowxz.domain.Message" >
+    <constructor >
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="type" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="content_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="status" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="receive_id" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="remark" jdbcType="VARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <resultMap id="BlobResultMap" type="com.shadowxz.domain.Message" >
+    <result property="id" column="id" />
+    <result property="type" column="type" />
+    <result property="contentId" column="content_id" />
+    <result property="status" column="status" />
+    <result property="receiveId" column="receive_id" />
+    <result property="content" column="content" />
+    <result property="pulishTime" column="pulish_time" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, type, content_id, status, receive_id, remark
+  </sql>
+  <select id="selectNoMsgCountByReceiveId" resultType="java.lang.Integer" parameterType="java.lang.String">
+    select count(*) from message
+    where status = '0' and receive_id = #{receiveId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByReceiveId" resultMap="BlobResultMap" parameterType="java.lang.String">
+    select * from (select t1.id,t1.type,t1.status,t1.content_id,t1.receive_id,
+                     t2.description as conent,t2.pulish_time as pulish_time
+                   from  message t1
+                     left join notify t2 on t2.id = t1.content_id
+                   where t1.receive_id = #{receiveId,jdbcType=VARCHAR}
+                   union
+                   select t1.id,t1.type,t1.status,t1.content_id,t1.receive_id,
+                     t3.description as conent,t3.pulish_time as pulish_time
+                   from  message t1
+                     left join homework t3 on t3.id = t1.content_id
+                   where t1.receive_id = #{receiveId,jdbcType=VARCHAR}
+                  ) t4
+    order by  t4.pulish_time desc;
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from message
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from message
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByTypeAndContentId" parameterType="java.lang.Map">
+    delete from message
+    where content_id = #{contentId,jdbcType=INTEGER} and type = #{type,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.shadowxz.domain.Message" >
+    insert into message (id, type, content_id, 
+      status, receive_id, remark
+      )
+    values (#{id,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}, #{contentId,jdbcType=INTEGER}, 
+      #{status,jdbcType=VARCHAR}, #{receiveId,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertMessages" parameterType="java.util.List">
+    insert into message (id, type, content_id,
+                         status, receive_id, remark)
+     values (
+      <foreach collection="list" item="message" index="index"
+      separator="," open="(" close=")">
+        (#{message.id,jdbcType=INTEGER}, #{message.type,jdbcType=VARCHAR}, #{message.contentId,jdbcType=INTEGER},
+      #{message.status,jdbcType=VARCHAR}, #{message.receiveId,jdbcType=VARCHAR}, #{message.remark,jdbcType=VARCHAR}
+      </foreach>
+     )
+  </insert>
+  <insert id="insertSelective" parameterType="com.shadowxz.domain.Message" >
+    insert into message
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="contentId != null" >
+        content_id,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="receiveId != null" >
+        receive_id,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="contentId != null" >
+        #{contentId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="receiveId != null" >
+        #{receiveId,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.shadowxz.domain.Message" >
+    update message
+    <set >
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="contentId != null" >
+        content_id = #{contentId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="receiveId != null" >
+        receive_id = #{receiveId,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.shadowxz.domain.Message" >
+    update message
+    set type = #{type,jdbcType=VARCHAR},
+      content_id = #{contentId,jdbcType=INTEGER},
+      status = #{status,jdbcType=VARCHAR},
+      receive_id = #{receiveId,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateMessageStaById" parameterType="java.lang.Integer">
+    update message
+    set status = '1'
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

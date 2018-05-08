@@ -94,6 +94,17 @@ public class HomeworkProgressServiceImpl implements HomeworkProgressService {
     }
 
     @Override
+    public void addHomeworkProgresss(List<HomeworkProgress> progresses) {
+        try {
+            homeworkProgressMapper.insertHomeworkProgresss(progresses);
+        } catch (Exception e) {
+            logger.error("批量新增作业进度失败------------------->");
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public void deleteHPByStudentId(Map<String, Object> map) {
         //todo
     }

@@ -1,6 +1,7 @@
 package com.shadowxz.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,8 @@ import com.shadowxz.domain.HomeworkScore;
 @Mapper
 public interface HomeworkScoreMapper {
     int deleteByPrimaryKey(Integer id);
+
+    int deleteByHomeworkId(Integer homeworkId);
 
     int insert(HomeworkScore record);
 
@@ -25,4 +28,6 @@ public interface HomeworkScoreMapper {
     int insertHomeworkScores(List<HomeworkScore> scores);
 
     int updateOverdue();
+
+    HomeworkScore selectByStuIdAndHwId(Map<String,Object> map);
 }

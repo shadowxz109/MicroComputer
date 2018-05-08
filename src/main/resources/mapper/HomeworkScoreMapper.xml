@@ -19,9 +19,20 @@
     from homework_score
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <select id="selectByStuIdAndHwId" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select
+    <include refid="Base_Column_List" />
+    from homework_score
+    where student_id = #{studentId,jdbcType=VARCHAR}
+    and homework_id = #{homeworkId,jdbcType=INTEGER}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from homework_score
     where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByHomeworkId" parameterType="java.lang.Integer">
+    delete from homework_score
+    where homework_id = #{homeworkId,jdbcType=INTEGER}
   </delete>
   <insert id="insertHomeworkScores"  parameterType="java.util.List">
     insert into homework_score (homework_id, student_id, scores, status)
