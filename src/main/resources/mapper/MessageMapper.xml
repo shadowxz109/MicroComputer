@@ -52,9 +52,9 @@
     delete from message
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByTypeAndContentId" parameterType="java.lang.Map">
+  <delete id="deleteByTypeAndContentId" parameterType="java.util.Map">
     delete from message
-    where content_id = #{contentId,jdbcType=INTEGER} and type = #{type,jdbcType=VARCHAR}
+    where content_id = #{contentId,jdbcType=INTEGER} and type = #{type,jdbcType=VARCHAR};
   </delete>
   <insert id="insert" parameterType="com.shadowxz.domain.Message" >
     insert into message (id, type, content_id, 
