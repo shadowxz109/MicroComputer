@@ -2,9 +2,14 @@ package com.shadowxz.domain;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class Notify {
     private Integer id;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date pulishTime;
 
     private String description;
@@ -33,6 +38,7 @@ public class Notify {
         this.id = id;
     }
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     public Date getPulishTime() {
         return pulishTime;
     }

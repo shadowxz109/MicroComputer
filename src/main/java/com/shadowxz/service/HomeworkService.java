@@ -21,6 +21,8 @@ public interface HomeworkService {
 
     Homework findByHomeworkId(Integer id);
 
+    Homework findHwScoreByStuIdAndHwId(Map<String,Object> map);
+
     List<Homework> findStuScoreByStutasAndStuId(Map<String,Object> map);
 
     void addHomework(Homework homework,String clazzs);

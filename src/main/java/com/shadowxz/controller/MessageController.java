@@ -34,7 +34,7 @@ public class MessageController {
     @Autowired
     MessageService messageService;
 
-    @RequestMapping(value = "/{receiveId}",method = RequestMethod.GET)
+    @RequestMapping(value = "/list/{receiveId}",method = RequestMethod.GET)
     public Map<String,Object> getMessageByReceiveId(@PathVariable("receiveId") String receiveId, HttpServletRequest request){
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
@@ -71,7 +71,7 @@ public class MessageController {
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
             HttpSession session = request.getSession();
-            Object sessionId = session.getAttribute("studentId") == null ? session.getAttribute("studentId") :
+            Object sessionId = session.getAttribute("studentId") != null ? session.getAttribute("studentId") :
                     session.getAttribute("teacherId");
             if(sessionId  != null){
                 messageService.updateMessageStaById(messageId);

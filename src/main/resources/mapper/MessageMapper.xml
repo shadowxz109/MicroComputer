@@ -29,15 +29,15 @@
   </select>
   <select id="selectByReceiveId" resultMap="BlobResultMap" parameterType="java.lang.String">
     select * from (select t1.id,t1.type,t1.status,t1.content_id,t1.receive_id,
-                     t2.description as conent,t2.pulish_time as pulish_time
+                     t2.description as content,t2.pulish_time as pulish_time
                    from  message t1
-                     left join notify t2 on t2.id = t1.content_id
+                     inner join notify t2 on t2.id = t1.content_id
                    where t1.receive_id = #{receiveId,jdbcType=VARCHAR}
                    union
                    select t1.id,t1.type,t1.status,t1.content_id,t1.receive_id,
-                     t3.description as conent,t3.pulish_time as pulish_time
+                     t3.description as content,t3.pulish_time as pulish_time
                    from  message t1
-                     left join homework t3 on t3.id = t1.content_id
+                     inner join homework t3 on t3.id = t1.content_id
                    where t1.receive_id = #{receiveId,jdbcType=VARCHAR}
                   ) t4
     order by  t4.pulish_time desc;

@@ -36,7 +36,7 @@ public class MessageServiceImpl implements MessageService {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        return null;
+        return messages;
     }
 
     @Override

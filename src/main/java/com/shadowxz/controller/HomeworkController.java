@@ -175,6 +175,24 @@ public class HomeworkController {
         return result;
     }
 
+    @RequestMapping(value = "/score/{homeworkId}/student/{studentId}",method = RequestMethod.GET)
+    public @ResponseBody Map<String,Object> getStudentHomeworkScore(@PathVariable("homeworkId") int homeworkId,
+                                                                    @PathVariable("studentId") String studentId){
+        Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
+        try {
+            Map<String,Object> map = new HashMap<>(2);
+            map.put("homeworkId",homeworkId);
+            map.put("studentId",studentId);
+            Homework homework = homeworkService.findHwScoreByStuIdAndHwId(map);
+            result.put("homework",homework);
+            result.put("msg_no",Constant.GET_DATA_SUCC);
+        } catch (Exception e) {
+            logger.error("获取学生单次作业成绩失败",e);
+            result.put("msg_no",Constant.GET_DATA_ERR);
+        }
+        return result;
+    }
+
 
     @RequestMapping(value = "",method = RequestMethod.POST)
     public @ResponseBody Map<String,Object> addHomework(Homework homework, @RequestParam("clazzs") String clazzs, HttpServletRequest request){

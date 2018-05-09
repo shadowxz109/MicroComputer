@@ -46,6 +46,8 @@ public class HomeworkProgressServiceImpl implements HomeworkProgressService {
             if(homework.getDeadline().before(new Date())) {
                 if (homeworkProgress.getType().equals("0") && homeworkItem.getAnswer().equals(homeworkProgress.getAnswer())) {
                     homeworkProgress.setScore(homeworkItem.getScore());
+                }else{
+                    homeworkProgress.setScore(0.0f);
                 }
                 homeworkProgressMapper.insertSelective(homeworkProgress);
             }

@@ -11,9 +11,27 @@
   <resultMap id="DetailResultMap" type="com.shadowxz.domain.Chapter" >
     <result property="chapterId" column="chapter_id" />
     <result property="chapterName" column="chapter_name" />
+    <association property="homework" javaType="com.shadowxz.domain.Homework">
+      <result property="id" column="homework_id" />
+      <result property="description" column="homework_desc" />
+    </association>
+    <association property="courseware" javaType="com.shadowxz.domain.Courseware">
+      <result property="id" column="courseware_id" />
+      <result property="name" column="courseware_name" />
+      <result property="file" column="courseware_file" />
+    </association>
     <collection property="children" ofType="com.shadowxz.domain.Chapter">
       <result property="chapterId" column="child_chapter_id" />
       <result property="chapterName" column="child_chapter_name" />
+      <association property="homework" javaType="com.shadowxz.domain.Homework">
+      <result property="id" column="child_homework_id" />
+      <result property="description" column="child_homework_desc" />
+    </association>
+      <association property="courseware" javaType="com.shadowxz.domain.Courseware">
+      <result property="id" column="child_courseware_id" />
+      <result property="name" column="child_courseware_name" />
+        <result property="file" column="child_courseware_file" />
+    </association>
     </collection>
   </resultMap>
   <sql id="Base_Column_List" >
@@ -32,9 +50,17 @@
   </select>
   <select id="selectChildByFatherId" resultMap="DetailResultMap" parameterType="java.lang.String">
      select distinct t1.chapter_id,t1.chapter_name,t2.chapter_id as child_chapter_id,
-       t2.chapter_name as child_chapter_name
+       t3.id as homework_id,t3.description as homework_desc,
+       t4.id as courseware_id,t4.name as courseware_name,t4.file as courseware_file,
+       t2.chapter_name as child_chapter_name,
+       t5.id as child_homework_id ,t5.description as child_homework_desc,
+       t6.id as child_courseware_id,t6.name as child_courseware_desc,t6.file as child_courseware_file
      from chapter t1
+       left join homework t3 on t3.chapter_id = t1.chapter_id
+       left join courseware t4 on t4.chapter_id = t1.chapter_id
        left join chapter t2 on t1.chapter_id = t2.father_id
+       left join homework t5 on t5.chapter_id = t2.chapter_id
+       left join courseware t6 on t6.chapter_id = t2.chapter_id
     where t1.father_id = #{fatherId,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >

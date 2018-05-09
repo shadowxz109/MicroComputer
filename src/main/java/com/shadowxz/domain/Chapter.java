@@ -14,6 +14,12 @@ public class Chapter {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Chapter> children;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Homework homework;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Courseware courseware;
+
     public Chapter(String chapterId, String chapterName, String fatherId) {
         this.chapterId = chapterId;
         this.chapterName = chapterName;
@@ -54,5 +60,21 @@ public class Chapter {
 
     public void setChildren(List<Chapter> children) {
         this.children = children;
+    }
+
+    public Homework getHomework() {
+        return homework;
+    }
+
+    public void setHomework(Homework homework) {
+        this.homework = homework;
+    }
+
+    public Courseware getCourseware() {
+        return courseware;
+    }
+
+    public void setCourseware(Courseware courseware) {
+        this.courseware = courseware;
     }
 }

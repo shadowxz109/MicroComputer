@@ -37,7 +37,7 @@ public class NotifyController {
     Logger logger = LoggerFactory.getLogger(NotifyController.class);
 
     @RequestMapping(value = "/{notifyId}",method = RequestMethod.GET)
-    public Map<String,Object> getNotify(@PathVariable("notify") Integer notifyId, HttpServletRequest request){
+    public Map<String,Object> getNotify(@PathVariable("notifyId") Integer notifyId, HttpServletRequest request){
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
             result.put("notify",notifyService.findNotifyById(notifyId));
@@ -56,7 +56,7 @@ public class NotifyController {
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
             HttpSession session = request.getSession();
-            Object sessionId = session.getAttribute("studentId") == null ? session.getAttribute("studentId") :
+            Object sessionId = session.getAttribute("studentId") != null ? session.getAttribute("studentId") :
                     session.getAttribute("teacherId");
             if(sessionId  != null){
                 result.put("notifies",notifyService.findAllNotify());

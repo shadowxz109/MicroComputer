@@ -2,7 +2,7 @@ package com.shadowxz.domain;
 
 import java.util.Date;
 
-import org.springframework.format.annotation.DateTimeFormat;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class Message {
     private Integer id;
@@ -19,7 +19,7 @@ public class Message {
 
     private String remark;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date pulishTime;
 
     public Message(Integer id, String type, Integer contentId, String status, String receiveId, String remark) {

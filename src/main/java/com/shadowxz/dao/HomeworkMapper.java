@@ -32,4 +32,6 @@ public interface HomeworkMapper {
     Homework selectStuScoreByHwIdAndStuId(Map<String,Object> map);
 
     List<Homework> selectStuScoreByStutasAndStuId(Map<String,Object> map);
+
+    Homework selectHwScoreByStuIdAndHwId(Map<String,Object> map);
 }

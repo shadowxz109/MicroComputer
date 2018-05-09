@@ -143,6 +143,18 @@
       on t1.id = t2.homework_id
     where t1.id = #{id,jdbcType=INTEGER}
   </select>
+  <!--一个学生单次作业-->
+  <select id="selectHwScoreByStuIdAndHwId" parameterType="java.util.Map" resultMap="ScoreResultMap">
+    select t1.id as id,t1.chapter_id,t1.pulish_time,t1.deadline,t1.teacher_id,t1.description,
+           t2.id as score_id,t2.homework_id,t2.student_id,t2.scores,t2.status
+    from homework t1
+    left join homework_score t2
+      on t1.id = t2.homework_id
+    left join student t3
+      on t2.student_id = t3.student_id
+    where t3.student_id = #{studentId,jdbcType=VARCHAR}
+    and t1.id = #{homeworkId,jdbcType=VARCHAR}
+  </select>
   <!--一个学生所有作业统计-->
   <select id="selectHwScoresByStuId" parameterType="java.lang.String" resultMap="ScoreResultMap">
     select t1.id as id,t1.chapter_id,t1.pulish_time,t1.deadline,t1.teacher_id,t1.description,

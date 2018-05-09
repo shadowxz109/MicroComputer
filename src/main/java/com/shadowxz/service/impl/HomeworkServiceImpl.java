@@ -127,7 +127,19 @@ public class HomeworkServiceImpl implements HomeworkService{
         return homework;
     }
 
-//    @Override
+    @Override
+    public Homework findHwScoreByStuIdAndHwId(Map<String, Object> map) {
+        Homework homework = null;
+        try {
+            homework = homeworkMapper.selectHwScoreByStuIdAndHwId(map);
+        } catch (Exception e) {
+            logger.error("查询作业信息失败------------------->",e);
+            throw new RuntimeException(e);
+        }
+        return homework;
+    }
+
+    //    @Override
 //    public Homework findScoresByStudentId(String studentId) {
 //        Homework homework = null;
 //        try {
