@@ -67,13 +67,11 @@
   <insert id="insertMessages" parameterType="java.util.List">
     insert into message (id, type, content_id,
                          status, receive_id, remark)
-     values (
-      <foreach collection="list" item="message" index="index"
-      separator="," open="(" close=")">
+     values
+      <foreach collection="list" item="message" index="index" separator=",">
         (#{message.id,jdbcType=INTEGER}, #{message.type,jdbcType=VARCHAR}, #{message.contentId,jdbcType=INTEGER},
-      #{message.status,jdbcType=VARCHAR}, #{message.receiveId,jdbcType=VARCHAR}, #{message.remark,jdbcType=VARCHAR}
+      #{message.status,jdbcType=VARCHAR}, #{message.receiveId,jdbcType=VARCHAR}, #{message.remark,jdbcType=VARCHAR})
       </foreach>
-     )
   </insert>
   <insert id="insertSelective" parameterType="com.shadowxz.domain.Message" >
     insert into message

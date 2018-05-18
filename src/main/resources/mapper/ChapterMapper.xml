@@ -11,6 +11,7 @@
   <resultMap id="DetailResultMap" type="com.shadowxz.domain.Chapter" >
     <result property="chapterId" column="chapter_id" />
     <result property="chapterName" column="chapter_name" />
+    <result property="fatherId" column="father_id" />
     <association property="homework" javaType="com.shadowxz.domain.Homework">
       <result property="id" column="homework_id" />
       <result property="description" column="homework_desc" />
@@ -23,6 +24,7 @@
     <collection property="children" ofType="com.shadowxz.domain.Chapter">
       <result property="chapterId" column="child_chapter_id" />
       <result property="chapterName" column="child_chapter_name" />
+        <result property="fatherId" column="child_father_id" />
       <association property="homework" javaType="com.shadowxz.domain.Homework">
       <result property="id" column="child_homework_id" />
       <result property="description" column="child_homework_desc" />
@@ -49,10 +51,10 @@
     from chapter
   </select>
   <select id="selectChildByFatherId" resultMap="DetailResultMap" parameterType="java.lang.String">
-     select distinct t1.chapter_id,t1.chapter_name,t2.chapter_id as child_chapter_id,
+     select distinct t1.chapter_id,t1.chapter_name,t1.father_id as father_id ,t2.chapter_id as child_chapter_id,
        t3.id as homework_id,t3.description as homework_desc,
        t4.id as courseware_id,t4.name as courseware_name,t4.file as courseware_file,
-       t2.chapter_name as child_chapter_name,
+       t2.chapter_name as child_chapter_name,t2.father_id as child_father_id,
        t5.id as child_homework_id ,t5.description as child_homework_desc,
        t6.id as child_courseware_id,t6.name as child_courseware_desc,t6.file as child_courseware_file
      from chapter t1
@@ -62,6 +64,7 @@
        left join homework t5 on t5.chapter_id = t2.chapter_id
        left join courseware t6 on t6.chapter_id = t2.chapter_id
     where t1.father_id = #{fatherId,jdbcType=VARCHAR}
+    order by t1.chapter_id,t2.chapter_id
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from chapter
