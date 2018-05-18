@@ -16,6 +16,12 @@ public class Teacher {
         this.name = name;
     }
 
+    public Teacher(String teacherId, String picture, String name) {
+        this.teacherId = teacherId;
+        this.picture = picture;
+        this.name = name;
+    }
+
     public Teacher() {
         super();
     }

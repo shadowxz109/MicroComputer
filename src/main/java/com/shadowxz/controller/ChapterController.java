@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -36,30 +37,39 @@ public class ChapterController {
     Logger logger = LoggerFactory.getLogger(CoursewareController.class);
 
     @RequestMapping(value = "/",method = RequestMethod.POST)
-    public @ResponseBody Map<String,Object> addChapter(Chapter chapter, HttpServletRequest request){
+    public @ResponseBody Map<String,Object> addChapter(@RequestBody Chapter chapter, HttpServletRequest request){
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
             if(request.getSession().getAttribute("teacherId") != null){
                 chapterService.addChapter(chapter);
+                result.put("msg","新增章节成功");
                 result.put("msg_no",Constant.GET_DATA_SUCC);
+            }else{
+                result.put("msg","请先登录教师帐号");
+                result.put("msg_no",Constant.GET_DATA_ERR);
             }
         } catch (Exception e) {
-            logger.error("新增章节信息失败",e);
+            String err = "新增章节信息失败";
+            logger.error(err,e);
+            result.put("msg",err);
             result.put("msg_no",Constant.GET_DATA_ERR);
         }
         return result;
     }
 
     @RequestMapping(value = "/{chapterId}",method = RequestMethod.PUT)
-    public @ResponseBody Map<String,Object> modifyChapter(Chapter chapter, HttpServletRequest request){
+    public @ResponseBody Map<String,Object> modifyChapter(@RequestBody Chapter chapter, HttpServletRequest request){
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
             if(request.getSession().getAttribute("teacherId") != null){
                 chapterService.modifyChapter(chapter);
+                result.put("msg","修改章节成功");
                 result.put("msg_no",Constant.GET_DATA_SUCC);
             }
         } catch (Exception e) {
-            logger.error("修改章节信息失败",e);
+            String err = "修改章节信息失败";
+            logger.error(err,e);
+            result.put("msg",err);
             result.put("msg_no",Constant.GET_DATA_ERR);
         }
         return result;
@@ -102,7 +112,7 @@ public class ChapterController {
         try {
             if(request.getSession().getAttribute("teacherId") != null) {
                 List<Chapter> list = chapterService.findAllChapters();
-                result.put("data", list);
+                result.put("chapters", list);
                 result.put("msg_no", Constant.GET_DATA_SUCC);
             }
         } catch (Exception e) {

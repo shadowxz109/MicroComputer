@@ -5,6 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 public class Chapter {
+
     private String chapterId;
 
     private String chapterName;

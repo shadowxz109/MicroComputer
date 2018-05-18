@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -75,7 +76,7 @@ public class NotifyController {
     }
 
     @RequestMapping(value = "",method = RequestMethod.POST)
-    public Map<String,Object> postNotify(HttpServletRequest request, Notify notify, @RequestParam("Clazz") String clazzs){
+    public Map<String,Object> postNotify(HttpServletRequest request,@RequestBody Notify notify, @RequestParam("clazzs") String clazzs){
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
             Object teacherId = request.getSession().getAttribute("teacherId");
@@ -99,7 +100,7 @@ public class NotifyController {
     }
 
     @RequestMapping(value = "/{notifyId}",method = RequestMethod.PUT)
-    public Map<String,Object> putNotify(@PathVariable("notify") Integer notifyId, Notify notify,HttpServletRequest request){
+    public Map<String,Object> putNotify(@PathVariable("notifyId") Integer notifyId, @RequestBody Notify notify,HttpServletRequest request){
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
             Object teacherId = request.getSession().getAttribute("teacherId");
@@ -121,7 +122,7 @@ public class NotifyController {
     }
 
     @RequestMapping(value = "/{notifyId}",method = RequestMethod.DELETE)
-    public Map<String,Object> deleteNotify(@PathVariable("notify") Integer notifyId, HttpServletRequest request){
+    public Map<String,Object> deleteNotify(@PathVariable("notifyId") Integer notifyId, HttpServletRequest request){
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
             Object teacherId = request.getSession().getAttribute("teacherId");

@@ -1,5 +1,7 @@
 package com.shadowxz.service;
 
+import com.shadowxz.domain.Teacher;
+
 /**
  * @Description:
  * @Author: xiangzhong23737
@@ -9,5 +11,7 @@ package com.shadowxz.service;
 public interface TeacherService {
 
     String findPasswordByTeacherId(String teacherId);
+
+    Teacher findTeacherById(String teacherId);
 
 }

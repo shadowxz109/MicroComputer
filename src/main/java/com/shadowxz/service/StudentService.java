@@ -26,4 +26,6 @@ public interface StudentService {
 
     List<String> findAllClass();
 
+    void deleteStudentByStudentId(String studentId);
+
 }

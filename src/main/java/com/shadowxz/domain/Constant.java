@@ -16,5 +16,5 @@ public class Constant {
     public static final byte GET_DATA_SUCC = 0;
     public static final byte GET_DATA_ERR = 1;
 
-    public static final byte RESULT_MAP_LENGTH = 2;
+    public static final byte RESULT_MAP_LENGTH = 3;
 }

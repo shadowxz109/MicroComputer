@@ -1,5 +1,7 @@
 package com.shadowxz.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,16 +9,24 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.shadowxz.domain.Constant;
+import com.shadowxz.domain.Teacher;
 import com.shadowxz.service.TeacherService;
 
 /**
@@ -33,6 +43,9 @@ public class TeacherController {
     
     @Autowired
     TeacherService teacherService;
+
+    @Value("${upload.dir}")
+    String uploadDir;
 
     @RequestMapping(value = "/session",method = RequestMethod.GET)
     public @ResponseBody
@@ -80,6 +93,8 @@ public class TeacherController {
                     status.setMaxAge(60*60*24*7);
                     status.setPath("/");
                     response.addCookie(status);
+                    Teacher teacher = teacherService.findTeacherById(teacherId);
+                    result.put("teacher",teacher);
                     result.put("msg_no", Constant.LOGIN_CODE_SUCC);
                     result.put("msg","登录成功");
                 }else{
@@ -116,5 +131,21 @@ public class TeacherController {
             result.put("msg_no",Constant.LOGIN_CODE_ERR);
         }
         return result;
+    }
+
+    @RequestMapping(value = "/picture/{picture:.+}",method = RequestMethod.GET)
+    public ResponseEntity<byte[]> getStudentPic(@PathVariable("picture") String picture){
+        try {
+            String path = uploadDir + "/picture";
+            File file = new File(path + File.separator + picture);
+            HttpHeaders headers = new HttpHeaders();
+            String downloadFielName = new String(picture.getBytes("UTF-8"),"iso-8859-1");
+            headers.setContentDispositionFormData("attachment", downloadFielName);
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file),headers, HttpStatus.CREATED);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return  null;
+        }
     }
 }

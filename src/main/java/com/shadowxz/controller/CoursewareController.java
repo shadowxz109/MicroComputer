@@ -124,9 +124,9 @@ public class CoursewareController {
                 Chapter chapter = chapterService.findChapterById(chapterId);
                 if (coursewares != null && chapter != null) {
                     if (coursewares.size() == 0) {
-                        courseware.setName(chapter.getChapterName());
+                        courseware.setName(chapter.getChapterName()+"章节课件");
                     } else {
-                        courseware.setName(chapter.getChapterName() + "(" + coursewares.size() + ")");
+                        courseware.setName(chapter.getChapterName() + "章节课件(" + coursewares.size() + ")");
                     }
                 }
                 courseware.setChapterId(chapterId);

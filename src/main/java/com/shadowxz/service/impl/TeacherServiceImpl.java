@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shadowxz.dao.TeacherMapper;
+import com.shadowxz.domain.Teacher;
 import com.shadowxz.service.TeacherService;
 
 /**
@@ -33,5 +34,18 @@ public class TeacherServiceImpl implements TeacherService {
             throw new RuntimeException(e);
         }
         return result ;
+    }
+
+    @Override
+    public Teacher findTeacherById(String teacherId) {
+        Teacher teacher = null;
+        try {
+            teacher = teacherMapper.selectByPrimaryKey(teacherId);
+        } catch (Exception e) {
+            logger.error("根据教师编号查询教师失败------------------->");
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return teacher;
     }
 }

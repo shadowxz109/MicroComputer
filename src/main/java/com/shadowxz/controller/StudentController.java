@@ -22,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -86,7 +87,7 @@ public class StudentController {
                 result.put("msg_no", Constant.GET_DATA_SUCC);
             }
         } catch (Exception e) {
-            logger.error("上传课件失败",e);
+            logger.error("上传头像失败",e);
             result.put("msg_no",Constant.GET_DATA_ERR);
         }
         return result;
@@ -116,10 +117,12 @@ public class StudentController {
     }
 
     @RequestMapping(value = "",method = RequestMethod.POST)
-    public @ResponseBody Map<String,Object> addStudent(Student student, HttpServletRequest request){
+    public @ResponseBody Map<String,Object> addStudent(@RequestBody Student student, HttpServletRequest request){
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
             if(request.getSession().getAttribute("teacherId") != null) {
+                student.setPassword("123456");
+                student.setPicture("hhh.JPG");
                 studentService.addStudent(student);
                 result.put("msg_no", Constant.GET_DATA_SUCC);
             }
@@ -138,7 +141,7 @@ public class StudentController {
             clazz.add(classId);
             List<Student> list = studentService.findStudentByClass(clazz);
             result.put("msg_no", Constant.GET_DATA_SUCC);
-            result.put("data", list);
+            result.put("students", list);
         } catch (Exception e) {
             logger.error("查询班级学生信息失败",e);
             result.put("msg_no",Constant.GET_DATA_ERR);
@@ -161,24 +164,52 @@ public class StudentController {
     }
 
     @RequestMapping(value = "/{urlStudentId}",method = RequestMethod.PUT)
-    public @ResponseBody Map<String,Object> modifyStudetInfo(@PathVariable("urlStudentId") String urlStudentId,HttpServletRequest request,Student newStudent){
+    public @ResponseBody Map<String,Object> modifyStudetInfo(@PathVariable("urlStudentId") String urlStudentId,HttpServletRequest request,@RequestBody Student newStudent){
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
             Object studentId = request.getSession().getAttribute("studentId");
-            if(studentId != null && studentId.toString().equals(urlStudentId)){
-                Student student = studentService.findStudentByStudentId(urlStudentId);
-                if(student != null){
+            Object teacherId = request.getSession().getAttribute("teacherId");
+            Student student = studentService.findStudentByStudentId(urlStudentId);
+            if(student != null && (teacherId != null || studentId != null)) {
+                if (teacherId != null) {
+                    student.setClazz(newStudent.getClazz());
+                    student.setGender(newStudent.getGender());
+                    student.setStudentId(newStudent.getStudentId());
+                    student.setName(newStudent.getName());
+                } else if (studentId.toString().equals(urlStudentId)) {
                     student.setEmail(newStudent.getEmail());
                     student.setGender(newStudent.getGender());
-                    studentService.modifyStudentInfo(student);
-                    result.put("msg_no",Constant.GET_DATA_SUCC);
                 }
+                studentService.modifyStudentInfo(student);
+                result.put("msg_no", Constant.GET_DATA_SUCC);
             }else{
                 result.put("msg_no",Constant.GET_DATA_ERR);
                 result.put("msg","请先登录");
             }
         } catch (Exception e) {
             logger.error("修改学生信息失败",e);
+            result.put("msg_no",Constant.GET_DATA_ERR);
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/{studentId}",method = RequestMethod.DELETE)
+    public @ResponseBody Map<String,Object> removeStudetInfo(@PathVariable("studentId") String studentId,HttpServletRequest request){
+        Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
+        try {
+            Object teacherId = request.getSession().getAttribute("teacherId");
+            if(teacherId != null ) {
+                studentService.deleteStudentByStudentId(studentId);
+                result.put("msg_no", Constant.GET_DATA_SUCC);
+                result.put("msg","删除学生信息成功");
+            }else{
+                result.put("msg_no",Constant.GET_DATA_ERR);
+                result.put("msg","请先登录");
+            }
+        } catch (Exception e) {
+            String err = "删除学生信息失败";
+            logger.error(err,e);
+            result.put("msg",err);
             result.put("msg_no",Constant.GET_DATA_ERR);
         }
         return result;
@@ -265,6 +296,22 @@ public class StudentController {
         } catch (Exception e) {
             logger.error("学生注销错误",e);
             result.put("msg_no",Constant.LOGIN_CODE_ERR);
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/class",method = RequestMethod.GET)
+    public @ResponseBody Map<String,Object> getAllClazzs(){
+        Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
+        try {
+            List<String> list = studentService.findAllClass();
+            result.put("msg_no", Constant.GET_DATA_SUCC);
+            result.put("clazzs", list);
+        } catch (Exception e) {
+            String err = "查询所有班级失败";
+            logger.error(err,e);
+            result.put("msg_no",Constant.GET_DATA_ERR);
+            result.put("msg",err);
         }
         return result;
     }

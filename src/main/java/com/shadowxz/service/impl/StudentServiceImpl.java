@@ -100,6 +100,16 @@ public class StudentServiceImpl implements StudentService{
         }
     }
 
+    @Override
+    public void deleteStudentByStudentId(String studentId) {
+        try {
+            studentMapper.deleteByPrimaryKey(studentId);
+        } catch (Exception e) {
+            logger.error("删除学生信息失败------------------->");
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public List<String> findAllClass() {
