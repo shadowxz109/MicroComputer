@@ -90,13 +90,19 @@
     </collection>
   </resultMap>
   <sql id="Base_Column_List">
-    id, chapter_id, pulish_time, deadline, teacher_id,description
+    id, chapter_id, pulish_time, deadline, description, teacher_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from homework
     where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectHomeworkByTeacherId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List" />
+    from homework
+    where teacher_id = #{teacherId,jdbcType=VARCHAR}
   </select>
   <!--一个学生单次作业完成情况详情-->
   <select id="selectStuScoreByHwIdAndStuId" parameterType="java.util.Map" resultMap="ScoreDetailResultMap">
@@ -169,7 +175,7 @@
   </select>
   <!--单次作业一个班作业完成情况-->
   <select id="selectHwScoresByIdAndClazz" parameterType="java.util.Map" resultMap="ScoreResultMap">
-    select t1.id as id,t1.chapter_id,t1.pulish_time,t1.deadline,t1.teacher_id,
+    select t1.id as id,t1.chapter_id,t1.pulish_time,t1.deadline,t1.teacher_id,t1.description,
            t2.id as score_id,t2.homework_id,t2.student_id,t2.scores,t2.status,
            t3.student_id as scores_student_id,t3.name,t3.clazz
     from homework t1

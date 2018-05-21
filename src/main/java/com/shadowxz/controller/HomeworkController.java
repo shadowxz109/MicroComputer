@@ -30,6 +30,7 @@ import com.shadowxz.service.HomeworkProgressService;
 import com.shadowxz.service.HomeworkScoreService;
 import com.shadowxz.service.HomeworkService;
 import com.shadowxz.service.StudentService;
+import com.shadowxz.util.LogUtil;
 
 /**
  * @Description:
@@ -107,6 +108,22 @@ public class HomeworkController {
             result.put("msg_no",Constant.GET_DATA_SUCC);
         } catch (Exception e) {
             logger.error("获取学生所有作业完成情况",e);
+            result.put("msg_no",Constant.GET_DATA_ERR);
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/list/teacher/{teacherId}",method = RequestMethod.GET)
+    public @ResponseBody Map<String,Object> getTeacherHomeworks(@PathVariable("teacherId") String teacherId){
+        Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
+        try {
+            List<Homework> homeworks = homeworkService.findHomeworkByTeacherId(teacherId);
+            result.put("homeworks",homeworks);
+            result.put("msg_no",Constant.GET_DATA_SUCC);
+        } catch (Exception e) {
+            String err = "获取老师所有作业";
+            logger.error(err,e);
+            result.put("msg",err);
             result.put("msg_no",Constant.GET_DATA_ERR);
         }
         return result;
@@ -195,7 +212,7 @@ public class HomeworkController {
 
 
     @RequestMapping(value = "",method = RequestMethod.POST)
-    public @ResponseBody Map<String,Object> addHomework(Homework homework, @RequestParam("clazzs") String clazzs, HttpServletRequest request){
+    public @ResponseBody Map<String,Object> addHomework(@RequestBody Homework homework, @RequestParam("clazzs") String clazzs, HttpServletRequest request){
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
             if (request.getSession().getAttribute("teacherId") != null) {
@@ -238,8 +255,7 @@ public class HomeworkController {
                 result.put("msg_no",Constant.GET_DATA_SUCC);
             }
         } catch (Exception e) {
-            logger.error("修改作业信息失败",e);
-            result.put("msg_no",Constant.GET_DATA_ERR);
+            result = LogUtil.errorLog(result,"修改作业信息失败",e);
         }
         return result;
     }

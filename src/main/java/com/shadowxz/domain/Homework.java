@@ -28,7 +28,7 @@ public class Homework {
 
     private List<HomeworkItem> items;
 
-    public Homework(Integer id, String chapterId, Date pulishTime, Date deadline, String teacherId,String description) {
+    public Homework(Integer id, String chapterId, Date pulishTime, Date deadline,String description,String teacherId) {
         this.id = id;
         this.chapterId = chapterId;
         this.pulishTime = pulishTime;

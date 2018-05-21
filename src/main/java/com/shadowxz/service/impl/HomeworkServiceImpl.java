@@ -52,7 +52,6 @@ public class HomeworkServiceImpl implements HomeworkService{
     @Override
     public void addHomework(Homework homework,String clazzs) {
         try {
-            //todo 题目添加
             homeworkMapper.insertSelective(homework);
             String[] array = clazzs.split(",");
             List<String> studentIds = studentMapper.selectStudentIdByClazzs(new ArrayList<>(Arrays.asList(array)));
@@ -188,5 +187,17 @@ public class HomeworkServiceImpl implements HomeworkService{
             throw new RuntimeException(e);
         }
         return homework;
+    }
+
+    @Override
+    public List<Homework> findHomeworkByTeacherId(String teacherId) {
+        List<Homework> homeworks = null;
+        try {
+            homeworks = homeworkMapper.selectHomeworkByTeacherId(teacherId);
+        } catch (Exception e) {
+            logger.error("根据教师号查询作业------------------->",e);
+            throw new RuntimeException(e);
+        }
+        return homeworks;
     }
 }

@@ -71,4 +71,15 @@ public class HomeworkItemServiceImpl implements HomeworkItemService{
         }
         return result;
     }
+
+    @Override
+    public void deleteHomeworkItemById(Integer id) {
+        try {
+            homeworkItemMapper.deleteByPrimaryKey(id);
+        } catch (Exception e) {
+            logger.error("删除作业题失败------------------->");
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 }

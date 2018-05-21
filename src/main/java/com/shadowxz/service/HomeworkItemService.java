@@ -12,6 +12,8 @@ public interface HomeworkItemService {
 
     void deleteByHomeworkId(Integer homeworkId);
 
+    void deleteHomeworkItemById(Integer id);
+
     void addHomeworkItem(HomeworkItem homeworkItem);
 
     void modifyHomeworkItem(HomeworkItem homeworkItem);
