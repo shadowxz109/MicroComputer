@@ -10,6 +10,26 @@
       <arg column="status" jdbcType="VARCHAR" javaType="java.lang.String" />
     </constructor>
   </resultMap>
+  <resultMap id="ScoreResultMap" type="com.shadowxz.domain.HomeworkScore">
+    <id property="id" column="score_id" />
+    <result property="homeworkId" column="homework_id"/>
+    <result property="studentId" column="student_id"/>
+    <result property="scores" column="scores"/>
+    <result property="status" column="status" />
+    <association property="homework" javaType="com.shadowxz.domain.Homework">
+      <id property="id" column="id" />
+      <result property="chapterId" column="chapter_id" />
+      <result property="pulishTime" column="pulish_time" />
+      <result property="deadline" column="deadline" />
+      <result property="teacherId" column="teacher_id"/>
+      <result property="description" column="description" />
+    </association>
+    <association property="student" javaType="com.shadowxz.domain.Student">
+      <id property="studentId" column="scores_student_id" />
+      <result property="name" column="name" />
+      <result property="clazz" column="clazz" />
+    </association>
+  </resultMap>
   <sql id="Base_Column_List" >
     id, homework_id, student_id, scores, status
   </sql>
@@ -115,5 +135,25 @@
     SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
     update homework_score t1 left join homework t2 on t1.homework_id = t2.id set t1.status = '5'
     where unix_timestamp(now()) > unix_timestamp(t2.deadline)
+  </select>
+  <!--单次作业一个班作业完成情况-->
+  <select id="selectHwScoresByIdAndClazz" parameterType="java.util.Map" resultMap="ScoreResultMap">
+    select t1.id as id,t1.chapter_id,t1.pulish_time,t1.deadline,t1.teacher_id,t1.description,
+           t2.id as score_id,t2.homework_id,t2.student_id,t2.scores,t2.status,
+           t3.student_id as scores_student_id,t3.name,t3.clazz
+    from homework t1
+    left join homework_score t2
+      on t1.id = t2.homework_id
+    left join student t3
+      on t2.student_id = t3.student_id
+    <where>
+      <if test="id != null">
+        t1.id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="clazz != null">
+        and t3.clazz = #{clazz,jdbcType=VARCHAR}
+      </if>
+    </where>
+    order by t3.clazz,t2.student_id asc
   </select>
 </mapper>

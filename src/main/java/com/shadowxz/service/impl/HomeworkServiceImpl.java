@@ -114,10 +114,10 @@ public class HomeworkServiceImpl implements HomeworkService{
 
     //某班学生单次作业完成情况
     @Override
-    public List<Homework> findScoresByIdAndClazz(Map<String, Object> map) {
-        List<Homework> homework = null;
+    public List<HomeworkScore> findScoresByIdAndClazz(Map<String, Object> map) {
+        List<HomeworkScore> homework = null;
         try {
-            homework = homeworkMapper.selectHwScoresByIdAndClazz(map);
+            homework = homeworkScoreMapper.selectHwScoresByIdAndClazz(map);
         } catch (Exception e) {
             logger.error("根据作业id和班级查询作业成绩失败------------------->",e);
             throw new RuntimeException(e);

@@ -16,6 +16,9 @@ public class HomeworkScore {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Student student;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Homework homework;
+
     public HomeworkScore(Integer id, Integer homeworkId, String studentId, Float scores, String status) {
         this.id = id;
         this.homeworkId = homeworkId;
@@ -81,5 +84,13 @@ public class HomeworkScore {
 
     public void setStudent(Student student) {
         this.student = student;
+    }
+
+    public Homework getHomework() {
+        return homework;
+    }
+
+    public void setHomework(Homework homework) {
+        this.homework = homework;
     }
 }

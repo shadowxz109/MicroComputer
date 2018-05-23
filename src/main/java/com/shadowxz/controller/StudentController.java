@@ -280,7 +280,7 @@ public class StudentController {
     }
 
     @RequestMapping(value = "/session",method = RequestMethod.DELETE)
-    public @ResponseBody Map<String,Object> loginOut(@RequestParam("studentId") String studentId,HttpServletRequest request, HttpServletResponse response){
+    public @ResponseBody Map<String,Object> loginOut(HttpServletRequest request, HttpServletResponse response){
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
             request.getSession().removeAttribute("studentId");
@@ -292,7 +292,7 @@ public class StudentController {
                     cookie.setMaxAge(0);
                 }
             }
-            result.put("msg_no",Constant.LOGIN_CODE_ERR);
+            result.put("msg_no",Constant.GET_DATA_SUCC);
         } catch (Exception e) {
             logger.error("学生注销错误",e);
             result.put("msg_no",Constant.LOGIN_CODE_ERR);

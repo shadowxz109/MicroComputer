@@ -24,4 +24,6 @@ public interface HomeworkProgressService {
     void modifyHomeworkProgress(HomeworkProgress homeworkProgress);
 
     HomeworkProgress findHPById(Integer id);
+
+    void modifyHomeworkProgress(List<HomeworkProgress> homeworkProgresses);
 }

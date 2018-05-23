@@ -30,4 +30,6 @@ public interface HomeworkScoreMapper {
     int updateOverdue();
 
     HomeworkScore selectByStuIdAndHwId(Map<String,Object> map);
+
+    List<HomeworkScore> selectHwScoresByIdAndClazz(Map<String,Object> map);
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.shadowxz.domain.Homework;
+import com.shadowxz.domain.HomeworkScore;
 
 /**
  * @Description:
@@ -13,7 +14,7 @@ import com.shadowxz.domain.Homework;
  */
 public interface HomeworkService {
 
-    List<Homework> findScoresByIdAndClazz(Map<String,Object> map);
+    List<HomeworkScore> findScoresByIdAndClazz(Map<String,Object> map);
 
     Homework findStuScoreByHwIdAndStuId(Map<String,Object> map);
 

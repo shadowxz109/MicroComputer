@@ -61,10 +61,16 @@ public class HomeworkController {
     StudentService studentService;
 
     @RequestMapping(value = "/{homeworkId}",method = RequestMethod.GET)
-    public @ResponseBody Map<String,Object> getHomeworkDetail(@PathVariable("homeworkId") int homeworkId){
+    public @ResponseBody Map<String,Object> getHomeworkDetail(@PathVariable("homeworkId") int homeworkId,HttpServletRequest request){
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
             Homework homework = homeworkService.findDetailByHomeworkId(homeworkId);
+            if(request.getSession().getAttribute("teacherId") == null){
+                List<HomeworkItem> items = homework.getItems();
+                for(HomeworkItem item : items){
+                    item.setAnswer(null);
+                }
+            }
             result.put("homework",homework);
             result.put("msg_no",Constant.GET_DATA_SUCC);
         } catch (Exception e) {
@@ -82,7 +88,7 @@ public class HomeworkController {
             Map<String,Object> map = new HashMap<>(2);
             map.put("id",homeworkId);
             map.put("clazz",clazz);
-            List<Homework> homeworks = homeworkService.findScoresByIdAndClazz(map);
+            List<HomeworkScore> homeworks = homeworkService.findScoresByIdAndClazz(map);
             result.put("homeworks",homeworks);
             result.put("msg_no",Constant.GET_DATA_SUCC);
         } catch (Exception e) {
@@ -130,46 +136,82 @@ public class HomeworkController {
     }
 
     @Transactional(rollbackFor=Exception.class)
-    @RequestMapping(value = "/{homeworkId}/student/{studentId}",method = RequestMethod.POST)
+    @RequestMapping(value = "/{homeworkId}/student/{urlStudentId}",method = RequestMethod.POST)
     public @ResponseBody Map<String,Object> postStudentHomeworkScoreDetail(@PathVariable("homeworkId") int homeworkId,
-                                                                          @PathVariable("studentId") String studentId,
+                                                                          @PathVariable("urlStudentId") String urlStudentId,
                                                                            HttpServletRequest request,
                                                                            @RequestBody Homework homework){
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
-            List<HomeworkItem> items = homework.getItems();
+            Object studentId = request.getSession().getAttribute("studentId");
+            Object teacherId = request.getSession().getAttribute("teacherId");
+            Map<String,Object> map = new HashMap<>(3);
+            map.put("studentId",urlStudentId);
+            map.put("homeworkId",homeworkId);
+            map.put("id",homeworkId);
+            //包含参考答案的题目
+            List<HomeworkItem> answerItems = homeworkService.findStuScoreByHwIdAndStuId(map).getItems();
+            //防止学生修改截至日期
             Homework realHomework = homeworkService.findByHomeworkId(homeworkId);
+            List<HomeworkItem> items = homework.getItems();
             List<HomeworkProgress> progresses = new ArrayList<>(items.size());
-            if(realHomework.getDeadline().after(new Date())){
+            HomeworkScore homeworkScore = homeworkScoreService.findByStuIdAndHwId(map);
+            if(studentId != null && urlStudentId.equals(studentId.toString())){
+                if(realHomework.getDeadline().after(new Date())){
+                    boolean allChoice = true;
+                    if(items != null && items.size() != 0){
+                        for(int i = 0; i < items.size(); i++ ){
+                            HomeworkItem item = items.get(i);
+                            HomeworkProgress progress  = items.get(i).getHomeworkProgress();
+                            if(progress != null){
+                                //自动批改
+                                if ( item.getType().equals("1") ) {
+                                    if(answerItems.get(i).getAnswer().equals(progress.getAnswer())){
+                                        progress.setScore(answerItems.get(i).getScore());
+                                    }else{
+                                        progress.setScore(0.0f);
+                                    }
+                                }else if(allChoice && (!item.getType().equals("1"))){
+                                    allChoice = false;
+                                }
+                                progress.setType("0");
+                                progress.setStatus("2");
+                                progress.setStudentId(studentId.toString());
+                                progress.setFinishDate(new Date());
+                                progresses.add(progress);
+                            }
+                        }
+                        homeworkProgressService.addHomeworkProgresss(progresses);
+                        homeworkScore.setStatus("1");
+                        if(allChoice){
+                            homeworkScore.setStatus("2");
+                        }
+                    }
+                }
+                homeworkScoreService.modifyHomeworkScore(homeworkScore);
+                result.put("msg_no",Constant.GET_DATA_SUCC);
+                result.put("msg","提交成功");
+            }else if(teacherId  != null){
                 if(items != null && items.size() != 0){
                     for(HomeworkItem item : items){
                         HomeworkProgress progress  = item.getHomeworkProgress();
                         if(progress != null){
-                            if ((progress.getType() == null || progress.getType().equals("0") || progress.getType().equals("4")) && item.getAnswer().equals(progress.getAnswer())) {
-                                progress.setScore(item.getScore());
-                            }
-                            progress.setType("0");
                             progress.setStatus("2");
-                            progress.setStudentId(studentId);
-                            progress.setFinishDate(new Date());
                             progresses.add(progress);
                         }
                     }
-                    homeworkProgressService.addHomeworkProgresss(progresses);
-                    Map<String,Object> map = new HashMap<>(2);
-                    map.put("studentId",studentId);
-                    map.put("homeworkId",homeworkId);
-                    HomeworkScore homeworkScore = homeworkScoreService.findByStuIdAndHwId(map);
-                    homeworkScore.setStatus("1");
-                    homeworkScoreService.modifyHomeworkScore(homeworkScore);
+                    homeworkProgressService.modifyHomeworkProgress(progresses);
+                    homeworkScore.setStatus("2");
                 }
+                homeworkScoreService.modifyHomeworkScore(homeworkScore);
                 result.put("msg_no",Constant.GET_DATA_SUCC);
+                result.put("msg","批改成功");
             }else{
                 result.put("msg_no",Constant.GET_DATA_ERR);
+                result.put("msg","请先登录");
             }
         } catch (Exception e) {
-            logger.error("提交学生单次作业失败",e);
-            result.put("msg_no",Constant.GET_DATA_ERR);
+            LogUtil.errorLog(result,"提交失败",e);
         }
         return result;
     }
@@ -179,15 +221,22 @@ public class HomeworkController {
                                                                   @PathVariable("studentId") String studentId){
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
-            Map<String,Object> map = new HashMap<>(2);
+            Map<String,Object> map = new HashMap<>(3);
             map.put("id",homeworkId);
             map.put("studentId",studentId);
+            map.put("homeworkId",homeworkId);
             Homework homework = homeworkService.findStuScoreByHwIdAndStuId(map);
+            HomeworkScore score = homeworkScoreService.findByStuIdAndHwId(map);
+            if(score != null && score.getStatus().equals("0")){
+                List<HomeworkItem> items = homework.getItems();
+                for(HomeworkItem item : items){
+                    item.setAnswer(null);
+                }
+            }
             result.put("homework",homework);
             result.put("msg_no",Constant.GET_DATA_SUCC);
         } catch (Exception e) {
-            logger.error("获取学生单次作业成绩失败",e);
-            result.put("msg_no",Constant.GET_DATA_ERR);
+            LogUtil.errorLog(result,"获取学生单次作业成绩失败",e);
         }
         return result;
     }
@@ -204,8 +253,7 @@ public class HomeworkController {
             result.put("homework",homework);
             result.put("msg_no",Constant.GET_DATA_SUCC);
         } catch (Exception e) {
-            logger.error("获取学生单次作业成绩失败",e);
-            result.put("msg_no",Constant.GET_DATA_ERR);
+            LogUtil.errorLog(result,"获取学生单次作业成绩失败",e);
         }
         return result;
     }
@@ -221,11 +269,11 @@ public class HomeworkController {
                     homeworkService.addHomework(homework,clazzs);
                     result.put("homework",homework);
                     result.put("msg_no",Constant.GET_DATA_SUCC);
+                    result.put("msg","新增作业信息成功");
                 }
             }
         } catch (Exception e) {
-            logger.error("新增作业信息失败",e);
-            result.put("msg_no",Constant.GET_DATA_ERR);
+            LogUtil.errorLog(result,"新增作业信息失败",e);
         }
         return result;
     }
@@ -237,17 +285,17 @@ public class HomeworkController {
             if (request.getSession().getAttribute("teacherId") != null) {
                 homeworkService.deleteHomeworkById(urlHomeworkId);
                 result.put("msg_no",Constant.GET_DATA_SUCC);
+                result.put("msg","删除成功");
             }
         } catch (Exception e) {
-            logger.error("删除作业信息失败",e);
-            result.put("msg_no",Constant.GET_DATA_ERR);
+            result = LogUtil.errorLog(result,"删除作业信息失败",e);
         }
         return result;
     }
 
 
     @RequestMapping(value = "/{urlHomeworkId}",method = RequestMethod.PUT)
-    public @ResponseBody Map<String,Object> modifyHomework(HttpServletRequest request, Homework homework){
+    public @ResponseBody Map<String,Object> modifyHomework(HttpServletRequest request, @RequestBody Homework homework){
         Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
         try {
             if (request.getSession().getAttribute("teacherId") != null) {
