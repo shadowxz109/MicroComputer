@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.shadowxz.domain.Constant;
 import com.shadowxz.domain.Message;
 import com.shadowxz.service.MessageService;
+import com.shadowxz.util.LogUtil;
 
 /**
  * @Description:
@@ -76,12 +77,13 @@ public class MessageController {
             if(sessionId  != null){
                 messageService.updateMessageStaById(messageId);
                 result.put("msg_no",Constant.GET_DATA_SUCC);
+            }else{
+                result.put("msg_no",Constant.GET_DATA_ERR);
+                result.put("msg","请先登录");
             }
         } catch (Exception e) {
             String errMsg = "修改消息状态失败";
-            logger.error(errMsg,e);
-            result.put("msg_no",Constant.GET_DATA_ERR);
-            result.put("msg",errMsg);
+            LogUtil.errorLog(result,errMsg,e);
         }
         return result;
     }

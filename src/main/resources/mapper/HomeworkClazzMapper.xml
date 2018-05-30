@@ -27,6 +27,14 @@
     values (#{id,jdbcType=INTEGER}, #{clazz,jdbcType=VARCHAR}, #{homeworkId,jdbcType=INTEGER}
       )
   </insert>
+  <insert id="inertHomeworkClazzs" parameterType="java.util.List">
+    insert into homework_clazz (clazz, homework_id
+      )
+    values
+      <foreach collection="list" separator="," item="item">
+        (#{item.clazz,jdbcType=VARCAHR}, #{item.homeworkId,jdbcType=INTEGER})
+      </foreach>
+  </insert>
   <insert id="insertSelective" parameterType="com.shadowxz.domain.HomeworkClazz" >
     insert into homework_clazz
     <trim prefix="(" suffix=")" suffixOverrides="," >

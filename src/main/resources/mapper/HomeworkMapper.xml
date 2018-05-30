@@ -126,7 +126,7 @@
     order by t2.question_num asc
   </select>
   <!--一个学生所有作业完成情况-->
-  <select id="selectStuScoreByStutasAndStuId" resultMap="StuScoreResultMap" parameterType="java.util.Map">
+  <select id="selectStuScoreByStatusAndStuId" resultMap="StuScoreResultMap" parameterType="java.util.Map">
     select t1.id as id,t1.chapter_id,t1.pulish_time,t1.deadline,t1.teacher_id,t1.description,
            t2.id as score_id,t2.homework_id,t2.student_id,t2.scores,t2.status
     from homework t1
@@ -174,14 +174,99 @@
       on t1.id = t2.homework_id
     where t1.id = #{id,jdbcType=INTEGER}
   </select>
+  <!--成绩分析-->
+  <select id="selectClazzAverageScore" parameterType="java.lang.String" resultType="java.util.Map">
+    select convert(avg(t4.scores),decimal(3,1)) as avgScore,t1.description
+    from homework t1
+    inner join homework_clazz t2
+      on t1.id = t2.homework_id
+    inner join student t3
+      on t2.clazz = t3.clazz
+    inner join homework_score t4
+      on t1.id = t4.homework_id and t4.student_id = t3.student_id and t4.status = '2'
+    where t2.clazz = #{clazz,jdbcType=VARCHAR}
+    group by t2.clazz,t1.id
+    order by t2.clazz,t1.id
+  </select>
+  <select id="selectQuestionAverageScore" resultType="java.util.Map" parameterType="java.lang.String">
+      select convert(avg(t5.score),decimal(3,1)) as score,t1.description,t4.question_num as questionNum
+      from homework t1
+      inner join homework_clazz t2
+        on t1.id = t2.homework_id
+      inner join student t3
+        on t2.clazz = t3.clazz
+      inner join homework_item t4
+        on t1.id = t4.homework_id
+      inner join homework_progress t5
+        on t4.id = t5.item_id and t5.student_id = t3.student_id and t5.status = '2'
+      where t2.clazz = #{clazz,jdbcType=VARCHAR}
+      group by t1.id,t4.id
+      order by t1.id,t4.question_num
+  </select>
+  <select id="selectAverageScore" resultType="java.util.Map">
+    select convert(avg(t4.scores),decimal(3,1)) as avgScore,t1.description,t2.clazz
+      from homework t1
+    inner join homework_clazz t2
+      on t1.id = t2.homework_id
+    inner join student t3
+      on t2.clazz = t3.clazz
+    inner join homework_score t4
+      on t1.id = t4.homework_id and t4.student_id = t3.student_id and t4.status = '2'
+    group by t2.clazz,t1.id
+    order by t2.clazz,t1.id
+  </select>
+  <select id="selectClazzMinAndMaxScore" parameterType="java.lang.String" resultType="java.util.Map">
+    select max(t4.scores) as maxScore,min(t4.scores) as  minScore,t1.description
+    from homework t1
+    inner join homework_clazz t2
+        on t1.id = t2.homework_id
+    inner join student t3
+        on t2.clazz = t3.clazz
+    inner join homework_score t4
+        on t1.id = t4.homework_id and t4.student_id = t3.student_id and t4.status = '2'
+    where t2.clazz = #{clazz,jdbcType=VARCHAR}
+    group by t2.clazz,t1.id
+    order by t2.clazz,t1.id
+  </select>
+  <!--最新作业所有分数-->
+  <select id="selectClazzScore" resultType="java.util.Map" parameterType="java.lang.String">
+      select t1.description,t4.scores
+      from homework t1
+      inner join homework_clazz t2
+          on t1.id = t2.homework_id
+      inner join student t3
+          on t2.clazz = t3.clazz
+      inner join homework_score t4
+          on t1.id = t4.homework_id and t4.student_id = t3.student_id and t4.status = '2'
+      where t2.clazz = #{clazz,jdbcType=VARCHAR}
+          and t1.id = (select t1.id from homework t1 order by t1.id desc limit 1,1)
+  </select>
+  <!--个人成绩-->
+  <select id="selectQuestionScore" resultType="java.util.Map" parameterType="java.lang.String">
+      select t3.score,t1.description,t2.question_num as questionNum
+      from homework t1
+      inner join homework_item t2
+        on t1.id = t2.homework_id
+      inner join homework_progress t3
+        on t2.id = t3.item_id and t3.status = '2'
+      where t3.student_id = #{studentId,jdbcType=VARCHAR}
+      order by t1.id,t2.question_num
+  </select>
+  <select id="selectStudentScore" resultType="java.util.Map" parameterType="java.lang.String">
+      select t1.description,t2.scores
+      from homework t1
+      inner join homework_score t2
+          on t1.id = t2.homework_id and t2.status = '2'
+      where t2.student_id = #{studentId,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from homework
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.shadowxz.domain.Homework">
-    insert into homework (id, chapter_id, pulish_time, 
+    insert into homework (id, chapter_id, pulish_time,
       deadline, teacher_id, description)
-    values (#{id,jdbcType=INTEGER}, #{chapterId,jdbcType=VARCHAR}, #{pulishTime,jdbcType=TIMESTAMP}, 
+    values (#{id,jdbcType=INTEGER}, #{chapterId,jdbcType=VARCHAR}, #{pulishTime,jdbcType=TIMESTAMP},
       #{deadline,jdbcType=TIMESTAMP}, #{teacherId,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.shadowxz.domain.Homework">

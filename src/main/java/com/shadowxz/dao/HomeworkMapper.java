@@ -29,10 +29,23 @@ public interface HomeworkMapper {
 
     Homework selectStuScoreByHwIdAndStuId(Map<String,Object> map);
 
-    List<Homework> selectStuScoreByStutasAndStuId(Map<String,Object> map);
+    List<Homework> selectStuScoreByStatusAndStuId(Map<String,Object> map);
 
     Homework selectHwScoreByStuIdAndHwId(Map<String,Object> map);
 
     List<Homework> selectHomeworkByTeacherId(String teacherId);
 
+    List<Map<String,Object>> selectClazzAverageScore(String clazz);
+
+    List<Map<String,Object>> selectQuestionAverageScore(String clazz);
+
+    List<Map<String,Object>> selectAverageScore();
+
+    List<Map<String,Object>> selectClazzMinAndMaxScore(String clazz);
+
+    List<Map<String,Object>> selectClazzScore(String clazz);
+
+    List<Map<String,Object>> selectStudentScore(String studentId);
+
+    List<Map<String,Object>> selectQuestionScore(String studentId);
 }

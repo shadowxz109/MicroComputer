@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.shadowxz.domain.Homework;
 import com.shadowxz.domain.HomeworkScore;
+import com.shadowxz.domain.QuestionAverageScore;
 
 /**
  * @Description:
@@ -27,6 +28,20 @@ public interface HomeworkService {
     List<Homework> findStuScoreByStutasAndStuId(Map<String,Object> map);
 
     List<Homework> findHomeworkByTeacherId(String teacherId);
+
+    Map<String,List<Object>> findClazzAverageScore(String clazz);
+
+    List<QuestionAverageScore> findQuestionAverageScore(String clazz);
+
+    List<QuestionAverageScore> findQuestionScore(String studentId);
+
+    Map<String,List<Object>> findStudentScore(String studentId);
+
+    Map<String,List<Object>> findAverageScore();
+
+    Map<String,List<Object>> findClazzMinAndMaxScore(String clazz);
+
+    Map<String,Object> findClazzScore(String clazz);
 
     void addHomework(Homework homework,String clazzs);
 

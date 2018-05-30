@@ -160,6 +160,7 @@ public class HomeworkController {
                 if(realHomework.getDeadline().after(new Date())){
                     boolean allChoice = true;
                     if(items != null && items.size() != 0){
+                        float scores = 0.0f;
                         for(int i = 0; i < items.size(); i++ ){
                             HomeworkItem item = items.get(i);
                             HomeworkProgress progress  = items.get(i).getHomeworkProgress();
@@ -167,6 +168,7 @@ public class HomeworkController {
                                 //自动批改
                                 if ( item.getType().equals("1") ) {
                                     if(answerItems.get(i).getAnswer().equals(progress.getAnswer())){
+                                        scores += answerItems.get(i).getScore();
                                         progress.setScore(answerItems.get(i).getScore());
                                     }else{
                                         progress.setScore(0.0f);
@@ -185,6 +187,7 @@ public class HomeworkController {
                         homeworkScore.setStatus("1");
                         if(allChoice){
                             homeworkScore.setStatus("2");
+                            homeworkScore.setScores(scores);
                         }
                     }
                 }
@@ -193,14 +196,17 @@ public class HomeworkController {
                 result.put("msg","提交成功");
             }else if(teacherId  != null){
                 if(items != null && items.size() != 0){
+                    float scores = 0.0f;
                     for(HomeworkItem item : items){
                         HomeworkProgress progress  = item.getHomeworkProgress();
                         if(progress != null){
+                            scores += progress.getScore();
                             progress.setStatus("2");
                             progresses.add(progress);
                         }
                     }
                     homeworkProgressService.modifyHomeworkProgress(progresses);
+                    homeworkScore.setScores(scores);
                     homeworkScore.setStatus("2");
                 }
                 homeworkScoreService.modifyHomeworkScore(homeworkScore);
@@ -308,4 +314,84 @@ public class HomeworkController {
         return result;
     }
 
+    @RequestMapping(value = "/analysis/clazzAvg/{clazz}",method = RequestMethod.GET)
+    public @ResponseBody Map<String,Object> getClazzAverageScore(@PathVariable("clazz") String clazz){
+        Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
+        try {
+            result.put("data",homeworkService.findClazzAverageScore(clazz));
+            result.put("msg_no",Constant.GET_DATA_SUCC);
+        }catch (Exception e){
+            String err = "获取班级平均成绩失败";
+            LogUtil.errorLog(result,err,e);
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/analysis/clazzMaxMin/{clazz}",method = RequestMethod.GET)
+    public @ResponseBody Map<String,Object> getClazzMaxMinScore(@PathVariable("clazz") String clazz){
+        Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
+        try{
+            result.put("data",homeworkService.findClazzMinAndMaxScore(clazz));
+            result.put("msg_no",Constant.GET_DATA_SUCC);
+        }catch (Exception e){
+            String err = "获取班级最高和最低分失败";
+            LogUtil.errorLog(result,err,e);
+        }
+        return result;
+    }
+
+
+    @RequestMapping(value = "/analysis/questionAvg/{clazz}",method = RequestMethod.GET)
+    public @ResponseBody Map<String,Object> getQuestionAverageScore(@PathVariable("clazz") String clazz){
+        Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
+        try{
+            result.put("data",homeworkService.findQuestionAverageScore(clazz));
+            result.put("msg_no",Constant.GET_DATA_SUCC);
+        }catch (Exception e){
+            String err = "获取班级题目平均分失败";
+            LogUtil.errorLog(result,err,e);
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/analysis/clazzScore/{clazz}",method = RequestMethod.GET)
+    public @ResponseBody Map<String,Object> getClazzScore(@PathVariable("clazz") String clazz){
+        Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
+        try{
+            result.put("data",homeworkService.findClazzScore(clazz));
+            result.put("msg_no",Constant.GET_DATA_SUCC);
+        }catch (Exception e){
+            String err = "获取班级成绩分布失败";
+            LogUtil.errorLog(result,err,e);
+        }
+        return result;
+    }
+
+
+    @RequestMapping(value = "/analysis/studentScore/{studentId}",method = RequestMethod.GET)
+    public @ResponseBody Map<String,Object> getStudentScore(@PathVariable("studentId") String studentId){
+        Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
+        try {
+            result.put("data",homeworkService.findStudentScore(studentId));
+            result.put("msg_no",Constant.GET_DATA_SUCC);
+        }catch (Exception e){
+            String err = "获取学生作业所有失败";
+            LogUtil.errorLog(result,err,e);
+        }
+        return result;
+    }
+
+
+    @RequestMapping(value = "/analysis/questionScore/{studentId}",method = RequestMethod.GET)
+    public @ResponseBody Map<String,Object> getQuestionScore(@PathVariable("studentId") String studentId){
+        Map<String,Object> result = new HashMap<>(Constant.RESULT_MAP_LENGTH);
+        try{
+            result.put("data",homeworkService.findQuestionScore(studentId));
+            result.put("msg_no",Constant.GET_DATA_SUCC);
+        }catch (Exception e){
+            String err = "获取作业题目分数失败";
+            LogUtil.errorLog(result,err,e);
+        }
+        return result;
+    }
 }
